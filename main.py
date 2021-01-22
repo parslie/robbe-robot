@@ -1,8 +1,10 @@
 import discord
 import staben
 import texts
+from poll import Poll
 
 cmd_prefix = "!"
+current_poll = None
 
 class BotClient(discord.Client):
     async def on_ready(self):
@@ -25,6 +27,13 @@ class BotClient(discord.Client):
         elif command == "help":
             embed = discord.Embed(title="Robbe Robot commands", description=texts.help)
             await channel.send(embed=embed)
+        elif command == "poll" and len(parameters) >= 2 and len(parameters) <= 9:
+            global current_poll
+            current_poll = Poll(parameters)
+            await current_poll.send_message(channel)
+            await current_poll.add_reactions()
+            # TODO: count reactions after time
+
 
 client = BotClient()
 client.run("ODAyMjQzNzA1NzMzMzgyMTU1.YAsZrA.EiHf5HglwCRB1d1ups7VpZCvizQ")
