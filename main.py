@@ -1,6 +1,6 @@
 import discord
+import staben
 
-global cmd_prefix
 cmd_prefix = "!"
 
 class BotClient(discord.Client):
@@ -19,7 +19,7 @@ class BotClient(discord.Client):
 
     async def on_command(self, user, channel, command, parameters):
         if command == "staben" and parameters and parameters[0] == "quote":
-            await channel.send("Staben kan testa discord bot!")
+            await channel.send(staben.get_quote())
             
 
 client = BotClient()
