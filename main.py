@@ -20,9 +20,11 @@ class BotClient(discord.Client):
 
     async def on_command(self, user, channel, command, parameters):
         if command == "staben" and parameters and parameters[0] == "quote":
-            await channel.send(staben.get_quote())
+            embed = discord.Embed(title=staben.get_quote())
+            await channel.send(embed=embed)
         elif command == "help":
-            await channel.send(texts.help)
+            embed = discord.Embed(title="Robbe Robot commands", description=texts.help)
+            await channel.send(embed=embed)
 
 client = BotClient()
 client.run("ODAyMjQzNzA1NzMzMzgyMTU1.YAsZrA.EiHf5HglwCRB1d1ups7VpZCvizQ")
