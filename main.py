@@ -1,5 +1,6 @@
 import discord
 import staben
+import texts
 
 cmd_prefix = "!"
 
@@ -20,7 +21,8 @@ class BotClient(discord.Client):
     async def on_command(self, user, channel, command, parameters):
         if command == "staben" and parameters and parameters[0] == "quote":
             await channel.send(staben.get_quote())
-            
+        elif command == "help":
+            await channel.send(texts.help)
 
 client = BotClient()
 client.run("ODAyMjQzNzA1NzMzMzgyMTU1.YAsZrA.EiHf5HglwCRB1d1ups7VpZCvizQ")
