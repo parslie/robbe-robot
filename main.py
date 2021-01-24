@@ -1,12 +1,11 @@
 import discord
 import random
-
-import staben
 import texts
-from poll import Poll
 
 cmd_prefix = "!"
-current_poll = None
+
+def process_command(message):
+    pass
 
 class BotClient(discord.Client):
     async def on_ready(self):
@@ -23,23 +22,22 @@ class BotClient(discord.Client):
             await self.on_command(message.author, message.channel, command, parameters)
 
     async def on_command(self, user, channel, command, parameters):
-        if command == "staben" and len(parameters) and parameters[0] == "quote":
-            embed = discord.Embed(title=staben.get_quote())
-            await channel.send(embed=embed)
-        elif command == "help":
-            embed = discord.Embed(title="Robbe Robot commands", description=texts.help)
-            await channel.send(embed=embed)
-        elif command == "poll" and len(parameters) >= 2 and len(parameters) <= 9:
-            global current_poll
-            current_poll = Poll(parameters)
-            await current_poll.send_message(channel)
-            await current_poll.add_reactions()
-            # TODO: count reactions after time
-        elif command == "roll" and len(parameters) == 1 and parameters[0].isnumeric():
-            roll = random.randrange(int(parameters[0])) + 1
-            embed = discord.Embed(title=user.display_name + " rolled a " + str(roll) + "!")
-            await channel.send(embed=embed)
+        if command == "help":
+            if len(parameters) == 0:
+                help_text = ""
 
+                for cmd,help in texts.help.items():
+                    help_text += cmd + " - " + help + "\n"
+
+                await self.send_embed(channel, title = "Robbe Robot commands", description = help_text)
+            elif len(parameters) == 1:
+                await self.send_embed(channel, title = "Help for " + parameters[0], description = texts.help.get(parameters[0]))
+        elif command == "plans":
+            await self.send_embed(channel, title = "Plans for Robbe Robot", description = texts.plans)
+
+    async def send_embed(self, channel, title=None, description=None):
+        embed = discord.Embed(title=title, description=description)
+        await channel.send(embed=embed)
 
 
 client = BotClient()
