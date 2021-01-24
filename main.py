@@ -1,4 +1,6 @@
 import discord
+import random
+
 import staben
 import texts
 from poll import Poll
@@ -21,7 +23,7 @@ class BotClient(discord.Client):
             await self.on_command(message.author, message.channel, command, parameters)
 
     async def on_command(self, user, channel, command, parameters):
-        if command == "staben" and parameters and parameters[0] == "quote":
+        if command == "staben" and len(parameters) and parameters[0] == "quote":
             embed = discord.Embed(title=staben.get_quote())
             await channel.send(embed=embed)
         elif command == "help":
@@ -33,6 +35,11 @@ class BotClient(discord.Client):
             await current_poll.send_message(channel)
             await current_poll.add_reactions()
             # TODO: count reactions after time
+        elif command == "roll" and len(parameters) == 1 and parameters[0].isnumeric():
+            roll = random.randrange(int(parameters[0])) + 1
+            embed = discord.Embed(title=user.display_name + " rolled a " + str(roll) + "!")
+            await channel.send(embed=embed)
+
 
 
 client = BotClient()
