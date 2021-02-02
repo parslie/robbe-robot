@@ -15,7 +15,7 @@ class BotClient(discord.Client):
         if message.author == self.user:
             return
 
-        if message.content[0] == cmd_prefix:
+        if len(message.content) > 0 && message.content[0] == cmd_prefix:
             message_split = message.content[1:].split(" ")
             command = message_split[0]
             parameters = message_split[1:]
