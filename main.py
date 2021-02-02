@@ -27,7 +27,7 @@ class BotClient(discord.Client):
                 help_text = ""
 
                 for cmd,help in texts.help.items():
-                    help_text += cmd + " - " + help + "\n"
+                    help_text += "**" + cmd + "** - " + help + "\n"
 
                 await self.send_embed(channel, title = "Robbe Robot commands", description = help_text)
             elif len(parameters) == 1:
