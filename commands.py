@@ -38,7 +38,8 @@ class Plans:
             - A source code command, that links to the repository where Robbe Robot lives.
             - A dice command, so that users can get a random number.
             - A react command, so that users can react in certain ways via custom reaction images.
-            - A counter command, so that users can create counters with specific titles. (e.g. Andröv Death counter)"""
+            - A counter command, so that users can create counters with specific titles. (e.g. Andröv Death counter)
+            - A mcdonken command, so that Ronald McDonald can read your soul and decide what you should eat."""
             embed = discord.Embed(title = "Plans for Robbe Robot", description = plans)
             await channel.send(embed=embed)
         else:
