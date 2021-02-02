@@ -61,6 +61,21 @@ class Staben:
             pass
 
 
+class Echo:
+    name = "echo"
+    detailed_name = "echo (text)"
+    desc = "Echos what you specify"
+    detailed_desc = "Echos what you specify"
+
+    async def execute(user, channel, parameters):
+        if len(parameters) == 1:
+            embed = discord.Embed(title = parameters[0])
+            await channel.send(embed=embed)
+        else:
+            pass
+
+
 cmds = {Help.name: Help,
         Plans.name: Plans,
-        Staben.name: Staben}
+        Staben.name: Staben,
+        Echo.name: Echo}
