@@ -1,6 +1,6 @@
 import discord
 from commands import cmds
-from token import token
+from bottoken import token
 
 cmd_prefix = "!"
 
