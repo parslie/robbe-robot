@@ -1,5 +1,6 @@
 import discord
 from commands import cmds
+from token import token
 
 cmd_prefix = "!"
 
@@ -42,4 +43,4 @@ class BotClient(discord.Client):
 
 
 client = BotClient()
-client.run("ODAyMjQzNzA1NzMzMzgyMTU1.YAsZrA.EiHf5HglwCRB1d1ups7VpZCvizQ")
+client.run(token)
