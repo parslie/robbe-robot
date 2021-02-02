@@ -61,15 +61,15 @@ class Staben:
             pass
 
 
-class Echo:
-    name = "echo"
-    detailed_name = "echo (text)"
-    desc = "Echos what you specify"
-    detailed_desc = "Echos what you specify"
+class Source:
+    name = "source"
+    detailed_name = "source"
+    desc = "Links to the repository of this bot"
+    detailed_desc = "Links to the repository where Robbe Robot lives"
 
     async def execute(user, channel, parameters):
-        if len(parameters) == 1:
-            embed = discord.Embed(title = parameters[0])
+        if len(parameters) == 0:
+            embed = discord.Embed(title = "Robbe Robot's residence", url = "https://github.com/Parslie/robbe-robot", description = "This is where Robbe Robot lives and spends most of his time!")
             await channel.send(embed=embed)
         else:
             pass
@@ -78,4 +78,4 @@ class Echo:
 cmds = {Help.name: Help,
         Plans.name: Plans,
         Staben.name: Staben,
-        Echo.name: Echo}
+        Source.name: Source}
