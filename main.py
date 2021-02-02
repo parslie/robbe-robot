@@ -1,11 +1,12 @@
 import discord
-import random
-import texts
+from commands import cmds
 
 cmd_prefix = "!"
 
+
 def process_command(message):
     pass
+
 
 class BotClient(discord.Client):
     async def on_ready(self):
@@ -19,25 +20,10 @@ class BotClient(discord.Client):
             message_split = message.content[1:].split(" ")
             command = message_split[0]
             parameters = message_split[1:]
-            await self.on_command(message.author, message.channel, command, parameters)
 
-    async def on_command(self, user, channel, command, parameters):
-        if command == "help":
-            if len(parameters) == 0:
-                help_text = ""
-
-                for cmd,help in texts.help.items():
-                    help_text += "**" + cmd + "** - " + help + "\n"
-
-                await self.send_embed(channel, title = "Robbe Robot commands", description = help_text)
-            elif len(parameters) == 1:
-                await self.send_embed(channel, title = "Help for " + parameters[0], description = texts.help.get(parameters[0]))
-        elif command == "plans":
-            await self.send_embed(channel, title = "Plans for Robbe Robot", description = texts.plans)
-
-    async def send_embed(self, channel, title=None, description=None):
-        embed = discord.Embed(title=title, description=description)
-        await channel.send(embed=embed)
+            cmd = cmds.get(command)
+            if cmd != None:
+                await cmd.execute(message.author, message.channel, parameters)
 
 
 client = BotClient()
