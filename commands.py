@@ -5,31 +5,36 @@ import random
 
 class Help:
     name = "help"
-    detailed_name = "help [cmd]"
-    desc = "Displays available commands"
-    detailed_desc = "Displays available commands, one of which can be specified"
+    parameters = "[CMD]"
+    description = "Displays all available commands, one of which can be specified."
+    usage = """**CMD** - The command you want help with."""
 
     async def execute(user, channel, parameters):
         if len(parameters) == 0:
             text = ""
+
             for cmd in cmds.values():
-                text += "**{}** - {}\n".format(cmd.detailed_name, cmd.desc)
-            
+                text += "**{}**".format(cmd.name)
+                if len(cmd.parameters) != 0:
+                    text += " **{}**".format(cmd.parameters)
+                text += " - {}\n".format(cmd.description)
+
             embed = discord.Embed(title = "Robbe Robot commands", description = text)
             await channel.send(embed=embed)
         elif len(parameters) == 1:
             cmd = cmds.get(parameters[0])
-            embed = discord.Embed(title = "Help for {}".format(cmd.name), description = cmd.detailed_desc)
-            await channel.send(embed=embed)
-        else:
-            pass
+            if cmd != None:
+                text = "{}\n\n{}".format(cmd.usage, cmd.description)
+                embed = discord.Embed(title = "{} {}".format(cmd.name, cmd.parameters), description = text)
+                await channel.send(embed=embed)
+
 
 
 class Plans:
-    name = "plans"
-    detailed_name = "plans"
-    desc = "Displays what plans exist for this bot"
-    detailed_desc = "Displays what plans exist for this bot"
+    name = "plans" 
+    parameters = ""
+    description = "Displays what plans exist for this bot"
+    usage = ""
 
     async def execute(user, channel, parameters):
         if len(parameters) == 0:
@@ -49,9 +54,9 @@ class Plans:
 
 class Staben:
     name = "staben"
-    detailed_name = "staben"
-    desc = "Invokes the power of STABEN!"
-    detailed_desc = "Invokeds the power of STABEN... in the form of quotes!"
+    parameters = ""
+    description = "Invokes the power of STABEN!"
+    usage = ""
 
     async def execute(user, channel, parameters):
         if len(parameters) == 0:
@@ -64,9 +69,9 @@ class Staben:
 
 class Source:
     name = "source"
-    detailed_name = "source"
-    desc = "Links to the repository of this bot"
-    detailed_desc = "Links to the repository where Robbe Robot lives"
+    parameters = ""
+    description = "Links to the repository of this bot"
+    usage = ""
 
     async def execute(user, channel, parameters):
         if len(parameters) == 0:
@@ -78,9 +83,9 @@ class Source:
 
 class Dice:
     name = "dice"
-    detailed_name = "dice (SIZE)"
-    desc = "Rolls a dice of variable size"
-    detailed_desc = "Rolls a dice of variable size. If a size is not specified, it will default to a six-sided die"
+    parameters = "[SIDES]"
+    description = "Rolls a die of variable size."
+    usage = "**SIDES** - The amount of sides of the die"
 
     async def execute(user, channel, parameters):
         sides = 6
