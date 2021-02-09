@@ -40,7 +40,7 @@ class Plans:
             - A counter command, so that users can create counters with specific titles. (e.g. Andröv Death counter)
             - A mcdonken command, so that Ronald McDonald can read your soul and decide what you should eat.
             - Better help messages. Describes how to use it and highlights words, etc.
-            - An erik command, so that users can PÖHÖHÖHÖ to hearts content."""
+            - An erik command, so that users can PÖHÖHÖHÖ to their hearts content."""
             embed = discord.Embed(title = "Plans for Robbe Robot", description = plans)
             await channel.send(embed=embed)
         else:
