@@ -1,5 +1,6 @@
 import discord
 import staben
+import random
 
 
 class Help:
@@ -35,8 +36,6 @@ class Plans:
             plans = """- A poll command, so that users can vote between up to 9 different things.
             - A video command, so that users can show videos in a voice channel.
             - A music command, so that users can play music in a voice channel.
-            - A source code command, that links to the repository where Robbe Robot lives.
-            - A dice command, so that users can get a random number.
             - A react command, so that users can react in certain ways via custom reaction images.
             - A counter command, so that users can create counters with specific titles. (e.g. Andröv Death counter)
             - A mcdonken command, so that Ronald McDonald can read your soul and decide what you should eat."""
@@ -75,7 +74,25 @@ class Source:
             pass
 
 
+class Dice:
+    name = "dice"
+    detailed_name = "dice (SIZE)"
+    desc = "Rolls a dice of variable size"
+    detailed_desc = "Rolls a dice of variable size. If a size is not specified, it will default to a six-sided die"
+
+    async def execute(user, channel, parameters):
+        sides = 6
+
+        if len(parameters) == 1:
+            sides = int(parameters[0]) # TODO: add exception-handling
+        if len(parameters) <= 1:
+            value = random.randint(1, sides)
+            embed = discord.Embed(title = "Robbe rolled a {}".format(value)) # TODO: replace with user name
+            await channel.send(embed=embed)
+
+
 cmds = {Help.name: Help,
         Plans.name: Plans,
         Staben.name: Staben,
-        Source.name: Source}
+        Source.name: Source,
+        Dice.name: Dice}
