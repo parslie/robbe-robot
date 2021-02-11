@@ -1,6 +1,7 @@
 import discord
 import staben
 import random
+import counter
 
 cmds = dict()
 
@@ -35,7 +36,7 @@ class Command:
         return "**{}**".format(self.name)
     
     def get_full_description(self):
-        return self.description + "**(TEMP. DESCRIPTION)**"
+        return self.description + "** (TEMPORARY DESCRIPTION)**"
 
 
 class Help(Command):
@@ -91,10 +92,9 @@ class Plans(Command):
             - A video command, so that users can show videos in a voice channel.
             - A music command, so that users can play music in a voice channel.
             - A react command, so that users can react in certain ways via custom reaction images.
-            - A counter command, so that users can create counters with specific titles. (e.g. Andröv Death counter)
             - A mcdonken command, so that Ronald McDonald can read your soul and decide what you should eat.
             - An erik command, so that users can PÖHÖHÖHÖ to their hearts content.
-            - A better command-argument system, to avoid type-convertions."""
+            - A better argument system, to avoid type-convertions."""
         embed = discord.Embed(title = "Plans for Robbe Robot", description = plans)
         await channel.send(embed = embed)
 
@@ -162,8 +162,66 @@ class Source(Command):
         await channel.send(embed = embed)
 
 
+class Counter(Command):
+    def __init__(self):
+        super().__init__("counter", "Manages counters created by the users.")
+        self.mode_arg = Argument("mode", "What to do with the list. (e.g: create, delete, increment, decrement, list)")
+        self.list_arg = Argument("list", "The ID of the list to use.")
+        self.title_arg = Argument("name", "The name of the list to create. (only for create)")
+    
+    def get_full_name(self):
+        return "**{} [{}] [{}] [{}]**".format(self.name, self.mode_arg.name, self.list_arg.name, self.title_arg.name)
+    
+    def get_full_description(self):
+        return "{}\n\n{}\n{}\n{}".format(self.description, self.mode_arg.to_string(), self.list_arg.to_string(), self.title_arg.to_string())
+    
+    async def execute(self, user, channel, arguments):
+        await super().execute(user, channel, arguments)
+        self.mode_arg.set_value(arguments, 0)
+        self.list_arg.set_value(arguments, 1)
+        self.title_arg.set_value(arguments, 2)
+        
+        # TODO: create better validation checks
+        if self.mode_arg.value == None:
+            return
+        
+        # TODO: create better system for modes
+        if self.mode_arg.value == "create" and self.title_arg.value != None:
+            counter.create(self.list_arg.value, self.title_arg.value)
+            embed = discord.Embed(title = "{} was created!".format(self.title_arg.value))
+            await channel.send(embed = embed)
+        elif self.mode_arg.value == "delete" and self.title_arg.value == None:
+            title = counter.get_title(self.list_arg.value)
+            counter.delete(self.list_arg.value)
+            embed = discord.Embed(title = "{} was deleted!".format(title))
+            await channel.send(embed = embed)
+        elif self.mode_arg.value == "increment" and self.title_arg.value == None:
+            counter.increment(self.list_arg.value)
+            title = counter.get_title(self.list_arg.value)
+            value = counter.get_value(self.list_arg.value)
+            embed = discord.Embed(title = "{} was incremented to {}!".format(title, value))
+            await channel.send(embed = embed)
+        elif self.mode_arg.value == "decrement" and self.title_arg.value == None:
+            counter.decrement(self.list_arg.value)
+            title = counter.get_title(self.list_arg.value)
+            value = counter.get_value(self.list_arg.value)
+            embed = discord.Embed(title = "{} was decremented to {}!".format(title, value))
+            await channel.send(embed = embed)
+        elif self.mode_arg.value == "list" and self.title_arg.value == None:
+            if self.list_arg.value == None:
+                text = counter.to_string()
+                embed = discord.Embed(title = "Counter IDs", description = text)
+                await channel.send(embed = embed)
+            else:
+                title = counter.get_title(self.list_arg.value)
+                value = counter.get_value(self.list_arg.value)
+                embed = discord.Embed(title = "{}: {}".format(title, value))
+                await channel.send(embed = embed)
+
+
+Staben() # Högst upp. Viktigtast, ju.
 Help()
-Plans()
+Counter()
 Dice()
-Staben()
+Plans()
 Source()
