@@ -30,7 +30,7 @@ def process_command(unprocessed_cmd):
 
 class BotClient(discord.Client):
     async def on_ready(self):
-        print("Logged in as", self.user)
+        print("Logged in as", self.user, "\n")
 
     async def on_message(self, message):
         if message.author == self.user:
