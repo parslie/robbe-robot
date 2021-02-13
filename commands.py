@@ -30,8 +30,7 @@ class Command:
         cmds[self.name] = self
     
     async def execute(self, user, channel, arguments):
-        print(self.name, "was executed by", user.display_name)
-        print("Arguments: {}\n".format(arguments))
+        print("Executing command:", self.name, "({})".format(user.display_name))
     
     def get_full_name(self):
         return "**{}**".format(self.name)

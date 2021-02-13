@@ -8,24 +8,35 @@ cmd_prefix = "!"
 def process_command(unprocessed_cmd):
     cmd = unprocessed_cmd.split()
     cmd_name = cmd[0]
-    unprocessed_parameters = cmd[1:]
+    unprocessed_arguments = cmd[1:]
+    print("Processing Command:", cmd_name)
+    print("Unprocessed Arguments:", unprocessed_arguments)
 
-    # TODO: add more error-free string processing
-    parameters = []
+    arguments = []
     processed_string = ""
-    for parameter in unprocessed_parameters:
-        if processed_string != "" and parameter[-1] == '"':
-            processed_string += parameter[0:-1]
-            parameters.append(processed_string)
-            processed_string = ""
-        elif processed_string != "":
-            processed_string += parameter + " "
-        elif parameter[0] == '"':
-            processed_string = parameter[1:] + " "
+    for argument in unprocessed_arguments:
+        if processed_string == "":
+            if len(argument) >= 2 and argument[-1] == '"' and argument[0] == '"':
+                # Single-worded string
+                arguments.append(argument[1:-1])
+            elif argument[0] == '"':
+                # Beginning of string
+                processed_string = argument[1:] + " "
+            else:
+                # Regular argument # TODO: convert to actual type
+                arguments.append(argument)
         else:
-            parameters.append(parameter)
+            if argument[-1] == '"':
+                # End of string
+                processed_string += argument[0:-1]
+                arguments.append(processed_string)
+                processed_string = ""
+            else:
+                # Word in middle of string
+                processed_string += argument + " "
 
-    return cmds.get(cmd_name), parameters
+    print("Processed Arguments:", arguments)
+    return cmds.get(cmd_name), arguments
 
 
 class BotClient(discord.Client):
@@ -37,9 +48,9 @@ class BotClient(discord.Client):
             return
 
         if len(message.content) > 0 and message.content[0] == cmd_prefix:
-            cmd, parameters = process_command(message.content[1:])
+            cmd, arguments = process_command(message.content[1:])
             if cmd != None:
-                await cmd.execute(message.author, message.channel, parameters)
+                await cmd.execute(message.author, message.channel, arguments)
 
 
 client = BotClient()
