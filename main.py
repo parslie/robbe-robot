@@ -24,8 +24,10 @@ def process_command(unprocessed_cmd):
                 processed_string = argument[1:] + " "
             else:
                 # Regular argument
-                if argument.isnumeric():
+                try:
                     argument = float(argument)
+                except:
+                    pass  # Argument is not a number
                 arguments.append(argument)
         else:
             if argument[-1] == '"':
