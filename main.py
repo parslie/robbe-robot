@@ -23,7 +23,9 @@ def process_command(unprocessed_cmd):
                 # Beginning of string
                 processed_string = argument[1:] + " "
             else:
-                # Regular argument # TODO: convert to actual type
+                # Regular argument
+                if argument.isnumeric():
+                    argument = float(argument)
                 arguments.append(argument)
         else:
             if argument[-1] == '"':

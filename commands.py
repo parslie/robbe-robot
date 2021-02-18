@@ -93,8 +93,7 @@ class Plans(Command):
             - A music command, so that users can play music in a voice channel.
             - A react command, so that users can react in certain ways via custom reaction images.
             - A mcdonken command, so that Ronald McDonald can read your soul and decide what you should eat.
-            - An erik command, so that users can PÖHÖHÖHÖ to their hearts content.
-            - A better argument system, to avoid type-convertions."""
+            - An erik command, so that users can PÖHÖHÖHÖ to their hearts content."""
         embed = discord.Embed(title = "Plans for Robbe Robot", description = plans)
         await channel.send(embed = embed)
 
@@ -114,10 +113,10 @@ class Dice(Command):
         await super().execute(user, channel, arguments)
         self.max_arg.set_value(arguments, 0, default = 6)
         
-        if len(arguments) > 1:
+        if len(arguments) > 1 and isinstance(self.max_arg.value, (int, float)):
             return
         
-        value = random.randint(1, int(self.max_arg.value)) # TODO: add exception-handling
+        value = random.randint(1, int(self.max_arg.value))
         embed = discord.Embed(title = "{} rolled a {}!".format(user.display_name, value))
         await channel.send(embed = embed)
 
