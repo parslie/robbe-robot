@@ -43,6 +43,7 @@ staben = ["STABEN har kilten under ingenting",
         "STABEN kan dividera med noll",
         "STABEN rullar ut och rullar på"]
 
+# TODO: rephrase slightly
 erik = ["PÖHÖHÖHÖ",
         "Tjena, har du tid att snacka eller?",
         "Vad är en pekare?",

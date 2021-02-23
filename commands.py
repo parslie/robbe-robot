@@ -41,7 +41,8 @@ class Command:
 
 
 ###################
-# Template Commands
+# Template Commands 
+# TODO: structure commands in a way that makes them more templatable
 
 
 class QuoteCommand(Command):
