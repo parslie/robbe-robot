@@ -1,11 +1,12 @@
 import discord
-import staben
+import quotes
 import random
 import counter
 
 cmds = dict()
 
 
+# TODO: remove Argument class, handle arguments directly in command classes
 class Argument:
     def __init__(self, name, description):
         self.name = name
@@ -37,6 +38,99 @@ class Command:
     
     def get_full_description(self):
         return self.description + "** (TEMPORARY DESCRIPTION)**"
+
+
+###################
+# Template Commands
+
+
+class QuoteCommand(Command):
+    def __init__(self, name, description):
+        super().__init__(name, description)
+        self.prev_generated_index = -1
+    
+    def generate_from(self, collection):
+        generated_index = self.prev_generated_index
+
+        # TODO: make handle collections of size <= 1
+        while generated_index == self.prev_generated_index:
+            generated_index = random.randrange(len(collection))
+
+        self.prev_generated_index = generated_index
+        return collection[generated_index]
+
+
+####################
+# Generator Commands
+
+
+class Staben(QuoteCommand):
+    def __init__(self):
+        super().__init__("staben", "Invokes the power of STABEN!")
+    
+    def get_full_name(self):
+        return "**{}**".format(self.name)
+    
+    def get_full_description(self):
+        return self.description
+    
+    async def execute(self, user, channel, arguments):
+        await super().execute(user, channel, arguments)
+        
+        if len(arguments) > 0:
+            return
+        
+        embed = discord.Embed(title = self.generate_from(quotes.staben), description = "- STABEN")
+        await channel.send(embed = embed)
+
+
+class Erik(QuoteCommand):
+    def __init__(self):
+        super().__init__("erik", "PÖHÖHÖHÖ, vad är en pekare?")
+    
+    def get_full_name(self):
+        return "**{}**".format(self.name)
+    
+    def get_full_description(self):
+        return self.description
+    
+    async def execute(self, user, channel, arguments):
+        await super().execute(user, channel, arguments)
+        
+        if len(arguments) > 0:
+            return
+        
+        embed = discord.Embed(title = self.generate_from(quotes.erik), description = "- Erik")
+        await channel.send(embed = embed)
+
+
+class Dice(Command):
+    def __init__(self):
+        super().__init__("dice", "Generates a random number from 1-6, unless specified otherwise.")
+        self.min_arg = Argument("min", "The minimum value the generated number can have.")
+        self.max_arg = Argument("max", "The maximum value the generated number can have.")
+    
+    def get_full_name(self):
+        return "**{} [{}] [{}]**".format(self.name, self.min_arg.name, self.max_arg.name)
+
+    def get_full_description(self):
+        return "{}\n{}\n\n{}".format(self.min_arg.to_string(), self.max_arg.to_string(), self.description)
+    
+    async def execute(self, user, channel, arguments):
+        await super().execute(user, channel, arguments)
+        self.min_arg.set_value(arguments, 0, default = 1)
+        self.max_arg.set_value(arguments, 1, default = 6)
+        
+        if len(arguments) > 2 and not isinstance(self.min_arg.value, (int, float)) and not isinstance(self.max_arg.value, (int, float)):
+            return
+        
+        generated_value = random.randint(self.min_arg.value, self.max_arg.value)
+        embed = discord.Embed(title = "{} rolled a {}!".format(user.display_name, generated_value))
+        await channel.send(embed = embed)
+
+
+#################
+# Misc Commands
 
 
 class Help(Command):
@@ -93,51 +187,8 @@ class Plans(Command):
             - A music command, so that users can play music in a voice channel.
             - A react command, so that users can react in certain ways via custom reaction images.
             - A mcdonken command, so that Ronald McDonald can read your soul and decide what you should eat.
-            - An erik command, so that users can PÖHÖHÖHÖ to their hearts content."""
+            - A better counter command, that is more intuitive."""
         embed = discord.Embed(title = "Plans for Robbe Robot", description = plans)
-        await channel.send(embed = embed)
-
-
-class Dice(Command):
-    def __init__(self):
-        super().__init__("dice", "Generates a random number from 1-6, unless specified otherwise.")
-        self.max_arg = Argument("max", "The max value the generated number can have.")
-    
-    def get_full_name(self):
-        return "**{} [{}]**".format(self.name, self.max_arg.name)
-
-    def get_full_description(self):
-        return "{}\n\n{}".format(self.max_arg.to_string(), self.description)
-    
-    async def execute(self, user, channel, arguments):
-        await super().execute(user, channel, arguments)
-        self.max_arg.set_value(arguments, 0, default = 6)
-        
-        if len(arguments) > 1 and isinstance(self.max_arg.value, (int, float)):
-            return
-        
-        value = random.randint(1, int(self.max_arg.value))
-        embed = discord.Embed(title = "{} rolled a {}!".format(user.display_name, value))
-        await channel.send(embed = embed)
-
-
-class Staben(Command):
-    def __init__(self):
-        super().__init__("staben", "Invokes the power of STABEN!")
-    
-    def get_full_name(self):
-        return "**{}**".format(self.name)
-    
-    def get_full_description(self):
-        return self.description
-    
-    async def execute(self, user, channel, arguments):
-        await super().execute(user, channel, arguments)
-        
-        if len(arguments) > 0:
-            return
-        
-        embed = discord.Embed(title = staben.get_quote())
         await channel.send(embed = embed)
 
 
@@ -222,5 +273,6 @@ Staben() # Högst upp. Viktigtast, ju.
 Help()
 Counter()
 Dice()
+Erik()
 Plans()
 Source()
