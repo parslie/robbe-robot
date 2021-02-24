@@ -42,67 +42,62 @@ class Command:
 
 ###################
 # Template Commands 
-# TODO: structure commands in a way that makes them more templatable
 
 
 class QuoteCommand(Command):
-    def __init__(self, name, description):
-        super().__init__(name, description)
-        self.prev_generated_index = -1
-    
-    def generate_from(self, collection):
-        generated_index = self.prev_generated_index
+    def __init__(self, name, description, quotes, author):
+        super().__init__(name, description) 
+        self.quotes = quotes
+        self.author = author
 
-        # TODO: make handle collections of size <= 1
-        while generated_index == self.prev_generated_index:
-            generated_index = random.randrange(len(collection))
+    def generate_index(self):
+        return random.randrange(len(self.quotes))
 
-        self.prev_generated_index = generated_index
-        return collection[generated_index]
+    def generate_quote(self, index):
+        return self.quotes[index]
 
+    def generate_author(self, index):
+        return "- " + self.author
 
-####################
-# Generator Commands
+    async def execute(self, user, channel, arguments):
+        await super().execute(user, channel, arguments)
+
+        if len(arguments) > 0:
+            return
+
+        quote_index = self.generate_index()
+        embed = discord.Embed(title = self.generate_quote(quote_index), description = self.generate_author(quote_index))
+        await channel.send(embed = embed)
+
+        
+################
+# Quote commands
 
 
 class Staben(QuoteCommand):
     def __init__(self):
-        super().__init__("staben", "Invokes the power of STABEN!")
+        super().__init__("staben", "Invokes the power of STABEN!", quotes.staben, "STABEN")
     
     def get_full_name(self):
         return "**{}**".format(self.name)
     
     def get_full_description(self):
         return self.description
-    
-    async def execute(self, user, channel, arguments):
-        await super().execute(user, channel, arguments)
-        
-        if len(arguments) > 0:
-            return
-        
-        embed = discord.Embed(title = self.generate_from(quotes.staben), description = "- STABEN")
-        await channel.send(embed = embed)
 
 
 class Erik(QuoteCommand):
     def __init__(self):
-        super().__init__("erik", "PÖHÖHÖHÖ, vad är en pekare?")
+        super().__init__("erik", "PÖHÖHÖHÖ, vad är en pekare?", quotes.erik, "Erik")
     
     def get_full_name(self):
         return "**{}**".format(self.name)
     
     def get_full_description(self):
         return self.description
-    
-    async def execute(self, user, channel, arguments):
-        await super().execute(user, channel, arguments)
-        
-        if len(arguments) > 0:
-            return
-        
-        embed = discord.Embed(title = self.generate_from(quotes.erik), description = "- Erik")
-        await channel.send(embed = embed)
+
+
+#################
+# Misc Commands
 
 
 class Dice(Command):
@@ -128,10 +123,6 @@ class Dice(Command):
         generated_value = random.randint(self.min_arg.value, self.max_arg.value)
         embed = discord.Embed(title = "{} rolled a {}!".format(user.display_name, generated_value))
         await channel.send(embed = embed)
-
-
-#################
-# Misc Commands
 
 
 class Help(Command):
