@@ -1,5 +1,6 @@
 import discord
 import generators
+import counter
 
 cmds = dict()
 
@@ -140,6 +141,71 @@ class Counter(Command):
     def __init__(self):
         super().__init__("counter", "Manipulates and displays counter, such as the Andröv Death counter.")
 
+    def usage(self):
+        return "{} {} {}".format(self.name, "[MODE]", "[ARGS...]")
+
+    async def create(self, channel, arguments):
+        if len(arguments) > 3: return
+        counter_id = arguments[1]
+        counter_title = arguments[2]
+
+        counter.create(counter_id, counter_title)
+        await self.send_message(channel, "{} was created!".format(counter_title))
+
+    async def delete(self, channel, arguments):
+        if len(arguments) > 2: return
+        counter_id = arguments[1]
+        counter_title = counter.get_title(counter_id)
+
+        counter.delete(counter_id)
+        await self.send_message(channel, "{} was deleted!".format(counter_title))
+
+    async def list(self, channel):
+        await self.send_message(channel, "Counter IDs", counter.to_string())
+
+    async def increment(self, channel, arguments):
+        if len(arguments) > 2: return
+        counter_id = arguments[1]
+
+        counter.increment(counter_id)
+        counter_title = counter.get_title(counter_id)
+        counter_value = counter.get_value(counter_id)
+        await self.send_message(channel, "{} was incremented to {}!".format(counter_title, counter_value))
+
+    async def decrement(self, channel, arguments):
+        if len(arguments) > 2: return
+        counter_id = arguments[1]
+
+        counter.decrement(counter_id)
+        counter_title = counter.get_title(counter_id)
+        counter_value = counter.get_value(counter_id)
+        await self.send_message(channel, "{} was decremented to {}!".format(counter_title, counter_value))
+
+    async def show(self, channel, arguments):
+        counter_id = arguments[0]
+
+        counter_title = counter.get_title(counter_id)
+        counter_value = counter.get_value(counter_id)
+        await self.send_message(channel, "{}: {}".format(counter_title, counter_value))
+
+    async def execute(self, user, channel, arguments):
+        await super().execute(user, channel, arguments)
+
+        if len(arguments) < 1: return
+
+        mode = arguments[0]
+        if mode == "create":
+            await self.create(channel, arguments)
+        elif mode == "delete":
+            await self.delete(channel, arguments)
+        elif mode == "list":
+            await self.list(channel)
+        elif mode == "increment":
+            await self.increment(channel, arguments)
+        elif mode == "decrement":
+            await self.decrement(channel, arguments)
+        else:  # mode == "show"
+            await self.show(channel, arguments)
 
 class Source(Command):
     def __init__(self):
@@ -158,7 +224,7 @@ class Source(Command):
 
 Staben()
 Help()
-#Counter()
+Counter()
 Dice()
 Donken()
 Erik()
