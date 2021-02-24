@@ -10,6 +10,7 @@ if os.path.exists(file_name):
     file.close()
 
 
+# TODO: create safeguard for already existing counters
 def create(name, title, default = 0):
     counters[name] = dict()
     counters[name]["title"] = title
@@ -17,6 +18,7 @@ def create(name, title, default = 0):
     save()
 
 
+# TODO: create boolean returns for is_successful
 def delete(name):
     counters.pop(name)
 
