@@ -99,111 +99,32 @@ class DonkenDessert(QuoteCommand):
         super().__init__("donken-dessert", "Let's Ronald McDonald read your soul and decide your next donken dessert.", quotes.donken_desserts, "Ronald McDonald")
 
 
-#################
-# Misc Commands
+##################
+# Counter Commands
 
 
-class Dice(Command):
-    def __init__(self):
-        super().__init__("dice", "Generates a random number from 1-6, unless specified otherwise.")
-        self.min_arg = Argument("min", "The minimum value the generated number can have.")
-        self.max_arg = Argument("max", "The maximum value the generated number can have.")
-    
-    def get_full_name(self):
-        return "**{} [{}] [{}]**".format(self.name, self.min_arg.name, self.max_arg.name)
-
-    def get_full_description(self):
-        return "{}\n{}\n\n{}".format(self.min_arg.to_string(), self.max_arg.to_string(), self.description)
-    
-    async def execute(self, user, channel, arguments):
-        await super().execute(user, channel, arguments)
-        self.min_arg.set_value(arguments, 0, default = 1)
-        self.max_arg.set_value(arguments, 1, default = 6)
-        
-        if len(arguments) > 2 and not isinstance(self.min_arg.value, (int, float)) and not isinstance(self.max_arg.value, (int, float)):
-            return
-        
-        generated_value = random.randint(self.min_arg.value, self.max_arg.value)
-        embed = discord.Embed(title = "{} rolled a {}!".format(user.display_name, generated_value))
-        await channel.send(embed = embed)
+class CounterCreate(Command):
+    pass
 
 
-class Help(Command):
-    def __init__(self):
-        super().__init__("help", "Displays all available commands, one of which can be specified.")
-        self.cmd_arg = Argument("cmd", "The command to display help for. (optional)") 
-    
-    def get_full_name(self):
-        return "**{} [{}]**".format(self.name, self.cmd_arg.name)
-    
-    def get_full_description(self):
-        return "{}\n\n{}".format(self.cmd_arg.to_string(), self.description)
-    
-    async def execute(self, user, channel, arguments):
-        await super().execute(user, channel, arguments)
-        self.cmd_arg.set_value(arguments, 0)
-        
-        if len(arguments) > 1:
-            return
-        
-        if self.cmd_arg.value == None:
-            text = ""
-
-            for cmd in cmds.values():
-                text += "{} - {}\n".format(cmd.get_full_name(), cmd.description)
-
-            embed = discord.Embed(title = "Robbe Robot commands", description = text)
-            await channel.send(embed = embed)
-        else:
-            cmd = cmds.get(self.cmd_arg.value)
-            if cmd != None:
-                embed = discord.Embed(title = cmd.get_full_name(), description = cmd.get_full_description())
-                await channel.send(embed = embed)
+class CounterDelete(Command):
+    pass
 
 
-class Plans(Command):
-    def __init__(self):
-        super().__init__("plans", "Displays the plans for Robbe Robot's future.")
-    
-    def get_full_name(self):
-        return "**{}**".format(self.name)
-    
-    def get_full_description(self):
-        return self.description
-    
-    async def execute(self, user, channel, arguments):
-        await super().execute(user, channel, arguments)
-        
-        if len(arguments) > 0:
-            return
-        
-        plans = """- A poll command, so that users can vote between up to 9 different things.
-            - A video command, so that users can show videos in a voice channel.
-            - A music command, so that users can play music in a voice channel.
-            - A react command, so that users can react in certain ways via custom reaction images.
-            - A better counter command, that is more intuitive."""
-        embed = discord.Embed(title = "Plans for Robbe Robot", description = plans)
-        await channel.send(embed = embed)
+class CounterView(Command):
+    pass
 
 
-class Source(Command):
-    def __init__(self):
-        super().__init__("source", "Links to the repository where this bot resides.")
-    
-    def get_full_name(self):
-        return "**{}**".format(self.name)
-    
-    def get_full_description(self):
-        return self.description
-    
-    async def execute(self, user, channel, arguments):
-        await super().execute(user, channel, arguments)
-        
-        if len(arguments) > 0:
-            return
-        
-        embed = discord.Embed(title = "Robbe Robot's residence", url = "https://github.com/Parslie/robbe-robot", description = "This is where Robbe Robot lives and spends most of his time!")
-        await channel.send(embed = embed)
+class CounterList(Command):
+    pass
+
+
+class CounterIncrement(Command):
+    pass
+
+
+class CounterDecrement(Command):
+    pass
 
 
 # TODO: create counter-create, counter-delete commands instead
@@ -263,6 +184,119 @@ class Counter(Command):
                 embed = discord.Embed(title = "{}: {}".format(title, value))
                 await channel.send(embed = embed)
 
+
+###############
+# Misc Commands
+
+
+class Dice(Command):
+    def __init__(self):
+        super().__init__("dice", "Generates a random number from 1-6, unless specified otherwise.")
+        self.min_arg = Argument("min", "The minimum value the generated number can have.")
+        self.max_arg = Argument("max", "The maximum value the generated number can have.")
+    
+    def get_full_name(self):
+        return "**{} [{}] [{}]**".format(self.name, self.min_arg.name, self.max_arg.name)
+
+    def get_full_description(self):
+        return "{}\n{}\n\n{}".format(self.min_arg.to_string(), self.max_arg.to_string(), self.description)
+    
+    async def execute(self, user, channel, arguments):
+        await super().execute(user, channel, arguments)
+        self.min_arg.set_value(arguments, 0, default = 1)
+        self.max_arg.set_value(arguments, 1, default = 6)
+        
+        if len(arguments) > 2 and not isinstance(self.min_arg.value, (int, float)) and not isinstance(self.max_arg.value, (int, float)):
+            return
+        
+        generated_value = random.randint(self.min_arg.value, self.max_arg.value)
+        embed = discord.Embed(title = "{} rolled a {}!".format(user.display_name, generated_value))
+        await channel.send(embed = embed)
+
+
+# TODO: allow to search for commands OR add pages
+class Help(Command):
+    def __init__(self):
+        super().__init__("help", "Displays all available commands, one of which can be specified.")
+        self.cmd_arg = Argument("cmd", "The command to display help for. (optional)") 
+    
+    def get_full_name(self):
+        return "**{} [{}]**".format(self.name, self.cmd_arg.name)
+    
+    def get_full_description(self):
+        return "{}\n\n{}".format(self.cmd_arg.to_string(), self.description)
+    
+    async def execute(self, user, channel, arguments):
+        await super().execute(user, channel, arguments)
+        self.cmd_arg.set_value(arguments, 0)
+        
+        if len(arguments) > 1:
+            return
+        
+        if self.cmd_arg.value == None:
+            text = ""
+
+            for cmd in cmds.values():
+                text += "{} - {}\n".format(cmd.get_full_name(), cmd.description)
+
+            embed = discord.Embed(title = "Robbe Robot commands", description = text)
+            await channel.send(embed = embed)
+        else:
+            cmd = cmds.get(self.cmd_arg.value)
+            if cmd != None:
+                embed = discord.Embed(title = cmd.get_full_name(), description = cmd.get_full_description())
+                await channel.send(embed = embed)
+
+
+class Plans(Command):
+    def __init__(self):
+        super().__init__("plans", "Displays the plans for Robbe Robot's future.")
+    
+    def get_full_name(self):
+        return "**{}**".format(self.name)
+    
+    def get_full_description(self):
+        return self.description
+    
+    async def execute(self, user, channel, arguments):
+        await super().execute(user, channel, arguments)
+        
+        if len(arguments) > 0:
+            return
+        
+        plans = """- A poll command, so that users can vote between up to 9 different things.
+            - A video command, so that users can show videos in a voice channel.
+            - A music command, so that users can play music in a voice channel.
+            - A react command, so that users can react in certain ways via custom reaction images.
+            - A better counter command, that is more intuitive.
+            - Make the donken command remember a specific persons meal (per day).
+            - Make the donken command have combinations of items, rather than a generic meal."""
+        embed = discord.Embed(title = "Plans for Robbe Robot", description = plans)
+        await channel.send(embed = embed)
+
+
+class Source(Command):
+    def __init__(self):
+        super().__init__("source", "Links to the repository where this bot resides.")
+    
+    def get_full_name(self):
+        return "**{}**".format(self.name)
+    
+    def get_full_description(self):
+        return self.description
+    
+    async def execute(self, user, channel, arguments):
+        await super().execute(user, channel, arguments)
+        
+        if len(arguments) > 0:
+            return
+        
+        embed = discord.Embed(title = "Robbe Robot's residence", url = "https://github.com/Parslie/robbe-robot", description = "This is where Robbe Robot lives and spends most of his time!")
+        await channel.send(embed = embed)
+
+
+###################
+# Activate commands
 
 Staben() # Högst upp. Viktigtast, ju.
 Help()
