@@ -73,7 +73,7 @@ def erik():
         return random.choice(erik_quotes)
 
 
-donken_menus = ["Big Mac & Co", "Trippel Cheese & Co", "McFeast & Co", "El Maco & Co"
+donken_menus = ["Big Mac & Co", "Trippel Cheese & Co", "McFeast & Co", "El Maco & Co",
         "Chicken McNuggets & Co", "Chicken McFeast & Co", "Chicken El Maco & Co",
         "McVegan & Co", "Veggie El Maco & Co"]
 

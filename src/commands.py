@@ -144,6 +144,9 @@ class Counter(Command):
     def usage(self):
         return "{} {} {}".format(self.name, "[MODE]", "[ARGS...]")
 
+    def details(self):
+        return self.description + "\n\nDESCRIPTION NOT FINISHED"
+
     async def create(self, channel, arguments):
         if len(arguments) > 3: return
         counter_id = arguments[1]
