@@ -3,4 +3,4 @@ SCRIPTPATH=$(dirname "$SCRIPT")
 cd $SCRIPTPATH
 
 source venv/Scripts/activate
-python src/main.py
+python -u src/main.py
