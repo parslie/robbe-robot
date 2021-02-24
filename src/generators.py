@@ -1,6 +1,9 @@
 import random
+import datetime
+# TODO: create functions with states (random.getstate, random.setstate)
 
-staben = ["STABEN har kilten under ingenting",
+
+staben_quotes = ["STABEN har kilten under ingenting",
         "Jesus kunde gå på vatten, men GENERALEN kan simma i vakuum",
         "STABEN kan surfa utan nätuppkoppling",
         "STABEN vet sista decimalen i π",
@@ -43,8 +46,11 @@ staben = ["STABEN har kilten under ingenting",
         "STABEN kan dividera med noll",
         "STABEN rullar ut och rullar på"]
 
-# TODO: rephrase slightly
-erik = ["PÖHÖHÖHÖ",
+def staben():
+        return random.choice(staben_quotes)
+
+
+erik_quotes = ["PÖHÖHÖHÖ",
         "Tjena, har du tid att snacka eller?",
         "Vad är en pekare?",
         "Jag testar att ringa Isak.",
@@ -63,14 +69,31 @@ erik = ["PÖHÖHÖHÖ",
         "Låt mig bara höja mitt bord. *EEEEEEEEEEEEEEEEEEEEEEE*",
         "Kan du skjutsa mig till akuten? Jag känner mig lite förkyld."]
 
+def erik():
+        return random.choice(erik_quotes)
+
+
 donken_menus = ["Big Mac & Co", "Trippel Cheese & Co", "McFeast & Co", "El Maco & Co"
         "Chicken McNuggets & Co", "Chicken McFeast & Co", "Chicken El Maco & Co",
         "McVegan & Co", "Veggie El Maco & Co"]
-for i in range(len(donken_menus)):
-        donken_menus[i] = "Du vill ha en " + donken_menus[i] + "!"
 
 donken_desserts = ["McFlurry Salted Caramel", "McFlurry Oreo", "McFlurry Daim",
         "Unicorn Freakshake", "Frappé Mocha", "Frappé Caramel",
         "Äppelpaj", "Sundae Deluxe Daim"]
-for i in range(len(donken_desserts)):
-        donken_desserts[i] = "Du vill ha en " + donken_desserts[i] + "!"
+
+def donken(seed):
+        curr_date = datetime.datetime.now()
+        oldstate = random.getstate()
+        random.seed(seed + curr_date.strftime("%j%Y"))
+
+        # TODO: add more options
+        menu = random.choice(donken_menus)
+        dessert = random.choice(donken_desserts)
+
+        random.setstate(oldstate)
+
+        return "You want a {} with a {}!".format(menu, dessert)
+
+
+def dice(sides=6):
+        return random.randint(1, sides)

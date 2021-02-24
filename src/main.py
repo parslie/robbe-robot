@@ -1,6 +1,6 @@
-import discord
-from commands import cmds
 from bottoken import token
+from commands import cmds
+import discord
 
 cmd_prefix = "!"
 
@@ -57,5 +57,6 @@ class BotClient(discord.Client):
                 await cmd.execute(message.author, message.channel, arguments)
 
 
-client = BotClient()
-client.run(token)
+if __name__ == "__main__":
+    client = BotClient()
+    client.run(token)
