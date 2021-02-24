@@ -6,7 +6,6 @@ import counter
 cmds = dict()
 
 
-# TODO: remove Argument class, handle arguments directly in command classes
 class Argument:
     def __init__(self, name, description):
         self.name = name
@@ -50,6 +49,12 @@ class QuoteCommand(Command):
         self.quotes = quotes
         self.author = author
 
+    def get_full_name(self):
+        return "**{}**".format(self.name)
+    
+    def get_full_description(self):
+        return self.description
+    
     def generate_index(self):
         return random.randrange(len(self.quotes))
 
@@ -77,23 +82,21 @@ class QuoteCommand(Command):
 class Staben(QuoteCommand):
     def __init__(self):
         super().__init__("staben", "Invokes the power of STABEN!", quotes.staben, "STABEN")
-    
-    def get_full_name(self):
-        return "**{}**".format(self.name)
-    
-    def get_full_description(self):
-        return self.description
 
 
 class Erik(QuoteCommand):
     def __init__(self):
         super().__init__("erik", "PÖHÖHÖHÖ, vad är en pekare?", quotes.erik, "Erik")
     
-    def get_full_name(self):
-        return "**{}**".format(self.name)
-    
-    def get_full_description(self):
-        return self.description
+
+class DonkenMenu(QuoteCommand):
+    def __init__(self):
+        super().__init__("donken-menu", "Let's Ronald McDonald read your soul and decide your next donken meal.", quotes.donken_menus, "Ronald McDonald")
+
+
+class DonkenDessert(QuoteCommand):
+    def __init__(self):
+        super().__init__("donken-dessert", "Let's Ronald McDonald read your soul and decide your next donken dessert.", quotes.donken_desserts, "Ronald McDonald")
 
 
 #################
@@ -178,7 +181,6 @@ class Plans(Command):
             - A video command, so that users can show videos in a voice channel.
             - A music command, so that users can play music in a voice channel.
             - A react command, so that users can react in certain ways via custom reaction images.
-            - A mcdonken command, so that Ronald McDonald can read your soul and decide what you should eat.
             - A better counter command, that is more intuitive."""
         embed = discord.Embed(title = "Plans for Robbe Robot", description = plans)
         await channel.send(embed = embed)
@@ -204,6 +206,7 @@ class Source(Command):
         await channel.send(embed = embed)
 
 
+# TODO: create counter-create, counter-delete commands instead
 class Counter(Command):
     def __init__(self):
         super().__init__("counter", "Manages counters created by the users.")
@@ -265,6 +268,8 @@ Staben() # Högst upp. Viktigtast, ju.
 Help()
 Counter()
 Dice()
+DonkenMenu()
+DonkenDessert()
 Erik()
 Plans()
 Source()

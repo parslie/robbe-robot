@@ -62,3 +62,15 @@ erik = ["PÖHÖHÖHÖ",
         "Ska vi labba kl 7:00 imorgon? Nej? Men nu blir det så här!",
         "Låt mig bara höja mitt bord. *EEEEEEEEEEEEEEEEEEEEEEE*",
         "Kan du skjutsa mig till akuten? Jag känner mig lite förkyld."]
+
+donken_menus = ["Big Mac & Co", "Trippel Cheese & Co", "McFeast & Co", "El Maco & Co"
+        "Chicken McNuggets & Co", "Chicken McFeast & Co", "Chicken El Maco & Co",
+        "McVegan & Co", "Veggie El Maco & Co"]
+for i in range(len(donken_menus)):
+        donken_menus[i] = "Du vill ha en " + donken_menus[i] + "!"
+
+donken_desserts = ["McFlurry Salted Caramel", "McFlurry Oreo", "McFlurry Daim",
+        "Unicorn Freakshake", "Frappé Mocha", "Frappé Caramel",
+        "Äppelpaj", "Sundae Deluxe Daim"]
+for i in range(len(donken_desserts)):
+        donken_desserts[i] = "Du vill ha en " + donken_desserts[i] + "!"
