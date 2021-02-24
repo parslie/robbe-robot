@@ -21,6 +21,7 @@ def create(name, title, default = 0):
 # TODO: create boolean returns for is_successful
 def delete(name):
     counters.pop(name)
+    save()
 
 
 def increment(name):
