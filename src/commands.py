@@ -57,7 +57,10 @@ class Erik(Command):
 class Donken(Command):
     def __init__(self):
        super().__init__("donken", "Reads your soul and decides your next donken meal.")
-    
+
+    def details(self):
+        return "{} Your soul's wants changes roughly once per hour.".format(self.description)
+
     async def execute(self, user, channel, arguments):
         await super().execute(user, channel, arguments)
 

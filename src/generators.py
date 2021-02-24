@@ -84,7 +84,7 @@ donken_desserts = ["McFlurry Salted Caramel", "McFlurry Oreo", "McFlurry Daim",
 def donken(seed):
         curr_date = datetime.datetime.now()
         oldstate = random.getstate()
-        random.seed(seed + curr_date.strftime("%j%Y"))
+        random.seed(seed + curr_date.strftime("%j%Y%H"))
 
         # TODO: add more options
         menu = random.choice(donken_menus)
