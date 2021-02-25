@@ -145,10 +145,19 @@ class Counter(Command):
         super().__init__("counter", "Manipulates and displays counter, such as the Andröv Death counter.")
 
     def usage(self):
-        return "{} {} {}".format(self.name, "[MODE]", "[ARGS...]")
+        return "{} {} {}".format(self.name, "[MODE]", "[ARGs...]")
 
     def details(self):
-        return self.description + "\n\nDESCRIPTION NOT FINISHED"
+        return self.description + \
+            """\n\n**[MODE]** - create, delete, increment, decrement, list, **or** show
+            **[ARGs...]** - different for each mode
+
+            **[ARGs...]** for list mode does not exist.
+            **[ARGs...]** for create mode are **[ID] [TITLE]**
+            **[ARGs...]** for all other modes are **[ID]**
+            
+            **[ID]** - The ID code for the counter.
+            **[TITLE]** -  The name for the counter."""
 
     async def create(self, channel, arguments):
         if len(arguments) > 3: return
@@ -221,7 +230,7 @@ class Counter(Command):
             await self.increment(channel, arguments)
         elif mode == "decrement":
             await self.decrement(channel, arguments)
-        else:  # mode == "show"
+        elif mode == "show":
             await self.show(channel, arguments)
 
 class Source(Command):
