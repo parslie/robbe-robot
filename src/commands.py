@@ -104,7 +104,7 @@ class React(Command):
         return f"""{self.description} Images can be added to a specific emotion."""
 
     async def execute(self, user, channel, arguments):
-        await super().__init__(user, channel, arguments)
+        await super().execute(user, channel, arguments)
 
 
 # Misc
