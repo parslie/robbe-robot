@@ -93,6 +93,20 @@ class Dice(Command):
         await self.send_message(channel, "{} rolled a {}!".format(user.display_name, value))
 
 
+class React(Command):
+    def __init__(self):
+        super().__init__("react", "Sends an image depicting the specified emotion. **W.I.P**")
+
+    def usage(self):
+        return "{} {}".format(self.name, "[EMOTION]")
+
+    def details(self):
+        return f"""{self.description} Images can be added to a specific emotion."""
+
+    async def execute(self, user, channel, arguments):
+        await super().__init__(user, channel, arguments)
+
+
 # Misc
 
 
@@ -234,6 +248,7 @@ class Counter(Command):
         elif mode == "show":
             await self.show(channel, arguments)
 
+
 class Source(Command):
     def __init__(self):
         super().__init__("source", "Gives the direction to Robbe Robot's residence.")
@@ -256,4 +271,5 @@ Dice()
 Donken()
 Erik()
 Plans()
+React()
 Source()
