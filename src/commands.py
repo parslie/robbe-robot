@@ -59,7 +59,7 @@ class Donken(Command):
        super().__init__("donken", "Reads your soul and decides your next donken meal.")
 
     def details(self):
-        return "{} Your soul's wants changes roughly once per hour.".format(self.description)
+        return "{} Your soul's wants change roughly once per hour.".format(self.description)
 
     async def execute(self, user, channel, arguments):
         await super().execute(user, channel, arguments)
@@ -155,16 +155,20 @@ class Counter(Command):
         counter_id = arguments[1]
         counter_title = arguments[2]
 
-        counter.create(counter_id, counter_title)
-        await self.send_message(channel, "{} was created!".format(counter_title))
+        if counter.create(counter_id, counter_title):
+            await self.send_message(channel, "'{}' was created!".format(counter_title))
+        else:
+            await self.send_message(channel, "A counter with ID '{}' already exists!".format(counter_id))
 
     async def delete(self, channel, arguments):
         if len(arguments) > 2: return
         counter_id = arguments[1]
         counter_title = counter.get_title(counter_id)
 
-        counter.delete(counter_id)
-        await self.send_message(channel, "{} was deleted!".format(counter_title))
+        if counter.delete(counter_id):
+            await self.send_message(channel, "'{}' was deleted!".format(counter_title))
+        else:
+            await self.send_message(channel, "A counter with ID '{}' does not exist!".format(counter_id))
 
     async def list(self, channel):
         await self.send_message(channel, "Counter IDs", counter.to_string())
@@ -173,26 +177,33 @@ class Counter(Command):
         if len(arguments) > 2: return
         counter_id = arguments[1]
 
-        counter.increment(counter_id)
-        counter_title = counter.get_title(counter_id)
-        counter_value = counter.get_value(counter_id)
-        await self.send_message(channel, "{} was incremented to {}!".format(counter_title, counter_value))
+        if counter.increment(counter_id):
+            counter_title = counter.get_title(counter_id)
+            counter_value = counter.get_value(counter_id)
+            await self.send_message(channel, "'{}' was incremented to {}!".format(counter_title, counter_value))
+        else:
+            await self.send_message(channel, "A counter with ID '{}' does not exist!".format(counter_id))
 
     async def decrement(self, channel, arguments):
         if len(arguments) > 2: return
         counter_id = arguments[1]
 
-        counter.decrement(counter_id)
-        counter_title = counter.get_title(counter_id)
-        counter_value = counter.get_value(counter_id)
-        await self.send_message(channel, "{} was decremented to {}!".format(counter_title, counter_value))
+        if counter.decrement(counter_id):
+            counter_title = counter.get_title(counter_id)
+            counter_value = counter.get_value(counter_id)
+            await self.send_message(channel, "'{}' was decremented to {}!".format(counter_title, counter_value))
+        else:
+            await self.send_message(channel, "A counter with ID '{}' does not exist!".format(counter_id))
 
     async def show(self, channel, arguments):
         counter_id = arguments[0]
 
         counter_title = counter.get_title(counter_id)
         counter_value = counter.get_value(counter_id)
-        await self.send_message(channel, "{}: {}".format(counter_title, counter_value))
+        if counter_title != None:
+            await self.send_message(channel, "{}: {}".format(counter_title, counter_value))
+        else:
+            await self.send_message(channel, "A counter with ID '{}' does not exist!".format(counter_id))
 
     async def execute(self, user, channel, arguments):
         await super().execute(user, channel, arguments)

@@ -10,44 +10,58 @@ if os.path.exists(file_name):
     file.close()
 
 
-# TODO: create safeguard for already existing counters
 def create(name, title, default = 0):
+    if name in counters:
+        return False
+
     counters[name] = dict()
     counters[name]["title"] = title
     counters[name]["value"] = default
     save()
+    return True
 
 
-# TODO: create boolean returns for is_successful
 def delete(name):
+    if name not in counters:
+        return False
+
     counters.pop(name)
     save()
+    return True
 
 
 def increment(name):
     counter = counters.get(name)
-    if counter != None:
-        counter["value"] += 1
-        save()
+    if counter == None:
+        return False
+    
+    counter["value"] += 1
+    save()
+    return True
 
 
 def decrement(name):
     counter = counters.get(name)
-    if counter != None:
-        counter["value"] -= 1
-        save()
+    if counter == None:
+        return False
+
+    counter["value"] -= 1
+    save()
+    return True
     
 
 def get_title(name):
     counter = counters.get(name)
-    if counter != None:
-        return counter["title"]
+    if counter == None:
+        return None
+    return counter["title"]
     
 
 def get_value(name):
     counter = counters.get(name)
-    if counter != None:
-        return counter["value"]
+    if counter == None:
+        return None
+    return counter["value"]
 
 
 def to_string():
@@ -55,7 +69,9 @@ def to_string():
     
     for id, counter in counters.items():
         text += "**{}** - {}\n".format(id, counter["title"])
-    
+    if text == "":
+        text = "There are no counters..."
+
     return text
 
 
