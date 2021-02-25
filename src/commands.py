@@ -148,13 +148,14 @@ class Counter(Command):
         return "{} {} {}".format(self.name, "[MODE]", "[ARGs...]")
 
     def details(self):
-        return self.description + \
-            """\n\n**[MODE]** - create, delete, increment, decrement, list, **or** show
+        return f"""{self.description}
+            
+            **[MODE]** - create, delete, increment, decrement, list, **or** show
             **[ARGs...]** - different for each mode
 
             **[ARGs...]** for list mode does not exist.
             **[ARGs...]** for create mode are **[ID] [TITLE]**
-            **[ARGs...]** for all other modes are **[ID]**
+            **[ARGs...]** for all other modes is **[ID]**
             
             **[ID]** - The ID code for the counter.
             **[TITLE]** -  The name for the counter."""
