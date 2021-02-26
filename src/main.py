@@ -54,7 +54,7 @@ class BotClient(discord.Client):
         if len(message.content) > 0 and message.content[0] == cmd_prefix:
             cmd, arguments = process_command(message.content[1:])
             if cmd != None:
-                await cmd.execute(message.author, message.channel, arguments)
+                await cmd.execute(self, message.author, message.channel, arguments)
 
 
 if __name__ == "__main__":

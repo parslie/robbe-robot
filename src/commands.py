@@ -21,7 +21,7 @@ class Command():
         embed = discord.Embed(title=title, description=description, url=url)
         await channel.send(embed=embed)
 
-    async def execute(self, user, channel, arguments):
+    async def execute(self, client, user, channel, arguments):
         print("Executing Command:", self.name, "({})".format(user.display_name), "\n")
 
 
@@ -32,8 +32,8 @@ class Staben(Command):
     def __init__(self):
        super().__init__("staben", "Invokes the power of STABEN!")
     
-    async def execute(self, user, channel, arguments):
-        await super().execute(user, channel, arguments)
+    async def execute(self, client, user, channel, arguments):
+        await super().execute(client, user, channel, arguments)
 
         if len(arguments) > 0: return
 
@@ -45,8 +45,8 @@ class Erik(Command):
     def __init__(self):
        super().__init__("erik", "Tjena, har du tid att snacka eller?")
     
-    async def execute(self, user, channel, arguments):
-        await super().execute(user, channel, arguments)
+    async def execute(self, client, user, channel, arguments):
+        await super().execute(client, user, channel, arguments)
 
         if len(arguments) > 0: return
 
@@ -61,8 +61,8 @@ class Donken(Command):
     def details(self):
         return "{} Your soul's wants change roughly once per hour.".format(self.description)
 
-    async def execute(self, user, channel, arguments):
-        await super().execute(user, channel, arguments)
+    async def execute(self, client, user, channel, arguments):
+        await super().execute(client, user, channel, arguments)
 
         if len(arguments) > 0: return
 
@@ -80,8 +80,8 @@ class Dice(Command):
     def details(self):
         return self.description + "\n\n**[MAX]** - The amount of sides the die has. Defaults to 6."
 
-    async def execute(self, user, channel, arguments):
-        await super().execute(user, channel, arguments)
+    async def execute(self, client, user, channel, arguments):
+        await super().execute(client, user, channel, arguments)
 
         if len(arguments) == 0: 
             value = generators.dice(6)
@@ -95,16 +95,26 @@ class Dice(Command):
 
 class React(Command):
     def __init__(self):
-        super().__init__("react", "Sends an image depicting the specified emotion. **W.I.P**")
+        super().__init__("react", "**W.I.P** Sends an image depicting the specified emotion.")
 
     def usage(self):
         return "{} {}".format(self.name, "[EMOTION]")
 
     def details(self):
-        return f"""{self.description} Images can be added to a specific emotion."""
+        return f"""{self.description} Images can be added to a specific emotion set."""
 
-    async def execute(self, user, channel, arguments):
-        await super().execute(user, channel, arguments)
+    async def execute(self, client, user, channel, arguments):
+        await super().execute(client, user, channel, arguments)
+
+        def check(msg):
+            return msg.channel == channel and msg.author == user and len(msg.attachments) == 1
+
+        await channel.send("Waiting for an image... (10 sec)")
+        try:
+            msg = await client.wait_for("message", check=check, timeout=10)
+            await channel.send("Image recieved!")
+        except:
+            await channel.send("No image recieved... :(")
 
 
 # Misc
@@ -114,8 +124,8 @@ class Plans(Command):
     def __init__(self):
         super().__init__("plans", "Displays the plans for Robbe Robot.")
     
-    async def execute(self, user, channel, arguments):
-        await super().execute(user, channel, arguments)
+    async def execute(self, client, user, channel, arguments):
+        await super().execute(client, user, channel, arguments)
 
         if len(arguments) > 0: return
 
@@ -143,8 +153,8 @@ class Help(Command):
         if cmd != None:
             await self.send_message(channel, cmd.usage(), cmd.details())
 
-    async def execute(self, user, channel, arguments):
-        await super().execute(user, channel, arguments)
+    async def execute(self, client, user, channel, arguments):
+        await super().execute(client, user, channel, arguments)
         
         if len(arguments) == 0:
             await self.show_all(channel)
@@ -229,8 +239,8 @@ class Counter(Command):
         else:
             await self.send_message(channel, "A counter with ID '{}' does not exist!".format(counter_id))
 
-    async def execute(self, user, channel, arguments):
-        await super().execute(user, channel, arguments)
+    async def execute(self, client, user, channel, arguments):
+        await super().execute(client, user, channel, arguments)
 
         if len(arguments) < 1: return
 
@@ -253,8 +263,8 @@ class Source(Command):
     def __init__(self):
         super().__init__("source", "Gives the direction to Robbe Robot's residence.")
 
-    async def execute(self, user, channel, arguments):
-        await super().execute(user, channel, arguments)
+    async def execute(self, client, user, channel, arguments):
+        await super().execute(client, user, channel, arguments)
 
         if len(arguments) > 0: return
 
