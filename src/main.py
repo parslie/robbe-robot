@@ -1,6 +1,7 @@
 from bottoken import token
 from commands import cmds
 import discord
+import react
 
 cmd_prefix = "!"
 
@@ -58,5 +59,6 @@ class BotClient(discord.Client):
 
 
 if __name__ == "__main__":
+    react.init()
     client = BotClient()
     client.run(token)

@@ -1,6 +1,7 @@
 import discord
 import generators
 import counter
+import react
 
 cmds = dict()
 
@@ -109,12 +110,27 @@ class React(Command):
         def check(msg):
             return msg.channel == channel and msg.author == user and len(msg.attachments) == 1
 
-        await channel.send("Waiting for an image... (10 sec)")
-        try:
-            msg = await client.wait_for("message", check=check, timeout=10)
-            await channel.send("Image recieved!")
-        except:
-            await channel.send("No image recieved... :(")
+        if len(arguments) == 1:
+            emotion = arguments[0]
+            emotion_img = react.get(emotion)
+            if emotion_img != None:
+                await channel.send(file=emotion_img)
+            else:
+                await self.send_message(channel, "There's no images depicting that emotion. D:")
+        elif len(arguments) == 2 and arguments[1] == "add":
+            emotion = arguments[0]
+
+            await self.send_message(channel, "Waiting for an image...", "This will timeout in 10 seconds.")
+            try:
+                msg = await client.wait_for("message", check=check, timeout=10)
+                msg_attachment = msg.attachments[0]
+                attachment_bytes = await msg_attachment.read()
+                if await react.add(emotion, msg_attachment.filename, attachment_bytes):
+                    await self.send_message(channel, "Successfully added image!")
+                else:
+                    await self.send_message(channel, "Could not add that image!")
+            except:
+                await self.send_message(channel, "No image recieved. D:")
 
 
 # Misc
