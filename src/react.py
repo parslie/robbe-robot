@@ -17,9 +17,10 @@ async def add(emotion, file_name, file_bytes):
         emotions[emotion] = []
 
     file_path = "{}/{}/{}".format(emotion_folder, emotion, file_name)
-    with open(file_path, "wb") as f:
-        f.write(file_bytes)
-    emotions[emotion].append(file_path)
+    if file_path not in emotions[emotion]:
+        with open(file_path, "wb") as f:
+            f.write(file_bytes)
+        emotions[emotion].append(file_path)
 
 
 def get(emotion):
