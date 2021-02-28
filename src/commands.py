@@ -102,11 +102,16 @@ class React(Command):
         return "{} {} {}".format(self.name, "[TYPE]", "(add)")
 
     def details(self):
-        details = f"{self.description} Custom images and types can be added by writing 'add' at the end.\n\nAvailable types: "
+        details = f"{self.description} Custom images and types can be added by writing 'add' at the end.\n\n"
 
-        for emotion in react.available_emotions():
-            details += f"**{emotion}**, "
-        details = details[:-2]
+        available_emotions = react.available_emotions()
+        if len(available_emotions) > 0:
+            details += "Available types: "
+            for emotion in available_emotions:
+                details += f"**{emotion}**, "
+            details = details[:-2]
+        else:
+            details += "There are no currently available types!"
 
         return details
 
