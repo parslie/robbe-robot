@@ -158,7 +158,7 @@ class Plans(Command):
             """- A **poll** command, so that users can vote between up to 9 different things.
             - A **video** command, so that users can show videos in a voice channel.
             - A **music** command, so that users can play music in a voice channel.
-            - A **react** command, so that users can react in certain ways via custom reaction images.""")
+            - A way to add multiple images at once to the **react** command.""")
 
 
 class Help(Command):
