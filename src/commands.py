@@ -115,6 +115,17 @@ class React(Command):
 
         return details
 
+    async def wait_for_add(self, client, channel, emotion, check, timeout):
+        try:
+            msg = await client.wait_for("message", check=check, timeout=timeout)
+            attachment = msg.attachments[0]
+            attachment_bytes = await attachment.read()
+            await react.add(emotion, attachment.filename, attachment_bytes)
+            await self.send_message(channel, "Successfully added image!", "You can add another one within 10 seconds.")
+            await self.wait_for_add(client, channel, emotion, check, timeout)
+        except:
+            pass
+
     async def execute(self, client, user, channel, arguments):
         await super().execute(client, user, channel, arguments)
 
@@ -132,14 +143,7 @@ class React(Command):
             emotion = arguments[0]
 
             await self.send_message(channel, "Waiting for an image...", "This will timeout in 10 seconds.")
-            try:
-                msg = await client.wait_for("message", check=check, timeout=10)
-                msg_attachment = msg.attachments[0]
-                attachment_bytes = await msg_attachment.read()
-                await react.add(emotion, msg_attachment.filename, attachment_bytes)
-                await self.send_message(channel, "Successfully added image!")
-            except:
-                await self.send_message(channel, "No image recieved. D:")
+            await self.wait_for_add(client, channel, emotion, check, 10)
 
 
 # Misc
