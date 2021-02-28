@@ -5,24 +5,21 @@ import glob
 
 emotion_folder = "emotions"
 emotions = dict()  # Links to emotions via paths
-available_emotions = ["serenity", "joy", "ecstasy",
-                    "acceptance", "trust", "admiration",
-                    "apprehension", "fear", "terror",
-                    "distraction", "surprise", "amazement",
-                    "pensiveness", "sadness", "grief",
-                    "boredom", "disgust", "loathing",
-                    "annoyance", "anger", "rage",
-                    "interest", "anticipation", "vigilance"]
+
+
+def available_emotions():
+    return [e for e in emotions.keys()]
 
 
 async def add(emotion, file_name, file_bytes):
-    if emotion in emotions:
-        file_path = "{}/{}/{}".format(emotion_folder, emotion, file_name)
-        with open(file_path, "wb") as f:
-            f.write(file_bytes)
-        emotions[emotion].append(file_path)
-        return True
-    return False
+    if emotion not in emotions:
+        make_folder("{}/{}".format(emotion_folder, emotion))
+        emotions[emotion] = []
+
+    file_path = "{}/{}/{}".format(emotion_folder, emotion, file_name)
+    with open(file_path, "wb") as f:
+        f.write(file_bytes)
+    emotions[emotion].append(file_path)
 
 
 def get(emotion):
@@ -44,10 +41,11 @@ def make_folder(path):
 
 def init():
     make_folder(emotion_folder)
+
+    available_emotions = glob.glob("{}/*/".format(emotion_folder))
+    for i in range(len(available_emotions)):
+        available_emotions[i] = os.path.dirname(available_emotions[i])
+        available_emotions[i] = os.path.basename(available_emotions[i])
+
     for emotion in available_emotions:
-        emotion_path = "{}/{}".format(emotion_folder, emotion)
-        make_folder(emotion_path)
-
-        emotions[emotion] = glob.glob(emotion_path + "/**")
-        print(emotions[emotion])
-
+        emotions[emotion] = glob.glob("{}/{}/**".format(emotion_folder, emotion))

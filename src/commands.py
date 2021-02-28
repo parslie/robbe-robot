@@ -96,13 +96,19 @@ class Dice(Command):
 
 class React(Command):
     def __init__(self):
-        super().__init__("react", "**W.I.P** Sends an image depicting the specified emotion.")
+        super().__init__("react", "Sends a reaction image of a specified type.")
 
     def usage(self):
-        return "{} {}".format(self.name, "[EMOTION]")
+        return "{} {} {}".format(self.name, "[TYPE]", "(add)")
 
     def details(self):
-        return f"""{self.description} Images can be added to a specific emotion set."""
+        details = f"{self.description} Custom images and types can be added by writing 'add' at the end.\n\nAvailable types: "
+
+        for emotion in react.available_emotions():
+            details += f"**{emotion}**, "
+        details = details[:-2]
+
+        return details
 
     async def execute(self, client, user, channel, arguments):
         await super().execute(client, user, channel, arguments)
@@ -125,10 +131,8 @@ class React(Command):
                 msg = await client.wait_for("message", check=check, timeout=10)
                 msg_attachment = msg.attachments[0]
                 attachment_bytes = await msg_attachment.read()
-                if await react.add(emotion, msg_attachment.filename, attachment_bytes):
-                    await self.send_message(channel, "Successfully added image!")
-                else:
-                    await self.send_message(channel, "Could not add that image!")
+                await react.add(emotion, msg_attachment.filename, attachment_bytes)
+                await self.send_message(channel, "Successfully added image!")
             except:
                 await self.send_message(channel, "No image recieved. D:")
 
