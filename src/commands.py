@@ -146,6 +146,32 @@ class React(Command):
             await self.wait_for_add(client, channel, emotion, check, 10)
 
 
+class Meme(Command):
+    def __init__(self):
+        super().__init__("meme", "Sends epic memes, like a boss!")
+
+    def usage(self):
+        return f"{self.name} [TYPE] (add)"
+
+    def details(self):
+        details = f"{self.description} You can add relevant new memes, like rage comics and the trollface, by writing 'add' at the end."
+
+        meme_types = []
+        if len(meme_types) != 0:
+            details += "Available meme types: "
+            for meme_type in meme_types:
+                details += f"**{meme_type}**, "
+            details = details[:-2]
+        else:
+            details += "There are currently now memes... **forever alone**"
+            
+
+        return details
+
+    async def execute(self, client, user, channel, arguments):
+        await super().execute(client, user, channel, arguments)
+
+
 # Misc
 
 
@@ -161,8 +187,7 @@ class Plans(Command):
         await self.send_message(channel, "Plans for Robbe Robot", \
             """- A **poll** command, so that users can vote between up to 9 different things.
             - A **video** command, so that users can show videos in a voice channel.
-            - A **music** command, so that users can play music in a voice channel.
-            - A way to add multiple images at once to the **react** command.""")
+            - A **music** command, so that users can play music in a voice channel.""")
 
 
 class Help(Command):
@@ -311,4 +336,5 @@ Donken()
 Erik()
 Plans()
 React()
+Meme()
 Source()
