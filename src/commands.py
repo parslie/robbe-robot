@@ -202,12 +202,12 @@ class Counter(Command):
     def details(self):
         return f"""{self.description}
             
-            **[MODE]** - create, delete, increment, decrement, list, **or** show
+            **[MODE]** - **create, delete, increment, decrement, list,** or **show**
             **[ARGs...]** - different for each mode
 
-            **[ARGs...]** for list mode does not exist.
-            **[ARGs...]** for create mode are **[ID] [TITLE]**
-            **[ARGs...]** for all other modes is **[ID]**
+            **[ARGs...]** for **list** mode does not exist.
+            **[ARGs...]** for **create** mode are **[ID] [TITLE]**
+            **[ARGs...]** for **all other** modes is **[ID]**
             
             **[ID]** - The ID code for the counter.
             **[TITLE]** -  The name for the counter."""
