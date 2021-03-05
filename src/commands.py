@@ -1,7 +1,7 @@
 import discord
 import generators
 import counter
-import react
+import meme
 
 cmds = dict()
 
@@ -94,58 +94,6 @@ class Dice(Command):
         await self.send_message(channel, "{} rolled a {}!".format(user.display_name, value))
 
 
-class React(Command):
-    def __init__(self):
-        super().__init__("react", "Sends a reaction image of a specified type.")
-
-    def usage(self):
-        return "{} {} {}".format(self.name, "[TYPE]", "(add)")
-
-    def details(self):
-        details = f"{self.description} Custom images and types can be added by writing 'add' at the end.\n\n"
-
-        available_emotions = react.available_emotions()
-        if len(available_emotions) > 0:
-            details += "Available types: "
-            for emotion in available_emotions:
-                details += f"**{emotion}**, "
-            details = details[:-2]
-        else:
-            details += "There are no currently available types!"
-
-        return details
-
-    async def wait_for_add(self, client, channel, emotion, check, timeout):
-        try:
-            msg = await client.wait_for("message", check=check, timeout=timeout)
-            attachment = msg.attachments[0]
-            attachment_bytes = await attachment.read()
-            await react.add(emotion, attachment.filename, attachment_bytes)
-            await self.send_message(channel, "Successfully added image!", "You can add another one within 10 seconds.")
-            await self.wait_for_add(client, channel, emotion, check, timeout)
-        except:
-            pass
-
-    async def execute(self, client, user, channel, arguments):
-        await super().execute(client, user, channel, arguments)
-
-        def check(msg):
-            return msg.channel == channel and msg.author == user and len(msg.attachments) == 1
-
-        if len(arguments) == 1:
-            emotion = arguments[0]
-            emotion_img = react.get(emotion)
-            if emotion_img != None:
-                await channel.send(file=emotion_img)
-            else:
-                await self.send_message(channel, "There's no images depicting that emotion. D:")
-        elif len(arguments) == 2 and arguments[1] == "add":
-            emotion = arguments[0]
-
-            await self.send_message(channel, "Waiting for an image...", "This will timeout in 10 seconds.")
-            await self.wait_for_add(client, channel, emotion, check, 10)
-
-
 class Meme(Command):
     def __init__(self):
         super().__init__("meme", "Sends epic memes, like a boss!")
@@ -154,9 +102,9 @@ class Meme(Command):
         return f"{self.name} [TYPE] (add)"
 
     def details(self):
-        details = f"{self.description} You can add relevant new memes, like rage comics and the trollface, by writing 'add' at the end."
+        details = f"{self.description} You can add relevant new memes, like rage comics and the trollface, by writing 'add' at the end.\n\n"
 
-        meme_types = []
+        meme_types = meme.get_types()
         if len(meme_types) != 0:
             details += "Available meme types: "
             for meme_type in meme_types:
@@ -164,12 +112,38 @@ class Meme(Command):
             details = details[:-2]
         else:
             details += "There are currently now memes... **forever alone**"
-            
 
         return details
 
+    async def add(self, client, user, channel, meme_type, check, timeout):
+        try:
+            msg = await client.wait_for("message", check=check, timeout=timeout)
+            attachment = msg.attachments[0]
+            attachment_bytes = await attachment.read()
+            meme.add(meme_type, attachment.filename, attachment_bytes)
+            await self.send_message(channel, "Successfully added meme!", f"You can add another one within {timeout} seconds...")
+            await self.add(client, user, channel, meme_type, check, timeout)
+        except:
+            await self.send_message(channel, f"Done waiting on {user.display_name} for memes!")
+
     async def execute(self, client, user, channel, arguments):
         await super().execute(client, user, channel, arguments)
+
+        def check(msg):
+            return msg.channel == channel and msg.author == user and len(msg.attachments) == 1
+
+        if len(arguments) == 1:
+            meme_type = arguments[0]
+            meme_img = meme.get(meme_type)
+            if meme_img != None:
+                await channel.send(file=meme_img)
+            else:
+                await self.send_message(channel, "There's no memes of that type!")
+        elif len(arguments) == 2 and arguments[1] == "add":
+            meme_type = arguments[0]
+            timeout = 16
+            await self.send_message(channel, "Waiting for a meme...", f"This will timeout in {timeout} seconds")
+            await self.add(client, user, channel, meme_type, check, timeout)
 
 
 # Misc
@@ -335,6 +309,5 @@ Dice()
 Donken()
 Erik()
 Plans()
-React()
 Meme()
 Source()
