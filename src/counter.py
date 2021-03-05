@@ -78,7 +78,9 @@ def save():
 
 
 def init():
+    global counters
     if os.path.exists(file_name):
         file = open(file_name, "r")
         counters = json.loads(file.read())
+        print(counters)
         file.close()
