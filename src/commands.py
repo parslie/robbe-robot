@@ -146,6 +146,23 @@ class Meme(Command):
             await self.add(client, user, channel, meme_type, check, timeout)
 
 
+class TTS(Command):
+    def __init__(self):
+       super().__init__("tts", "Translate swedish to tts-understable text.")
+
+    def details(self):
+        return f"{self.description} Gives Robbe Robot the ability to speak. Finally!"
+    
+    async def execute(self, client, user, channel, arguments):
+        await super().execute(client, user, channel, arguments)
+
+        if len(arguments) != 1: return
+
+        to_translate = arguments[0]
+        translated = generators.tts(to_translate)
+        await channel.send(translated, tts=True)
+
+
 # Voice Channel Commands
 
 
@@ -336,3 +353,4 @@ Plans()
 Play()
 Meme()
 Source()
+TTS()

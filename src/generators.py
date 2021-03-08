@@ -102,3 +102,59 @@ def donken(seed):
 
 def dice(sides=6):
         return random.randint(1, sides)
+
+
+tts_dict = {"göra": "yöra",
+        "mot": "mote",
+        "här": "hair",
+        "finns": "fins",
+        "vi": "ve",
+        "staben": "staaaben",
+        "i": "e",
+        "våra": "vora",
+        "hjärtan": "yertaenn",
+        "produktivt": "product eeft",
+        "varit": "var it",
+        "ganska": "gaanska",
+        "valle": "valleh",
+        "vetenskap": "vet en skaap",
+        "idag": "e daag",
+        "igår": "e gore",
+        "kunskap": "kuunskaaap",
+        "lärdom": "lairdom",
+        "isse": "issuh",
+        "bissenisse": "bissuh nissuh",
+        "gitarr": "jituhr",
+        "meddela": "meadeela",
+        "spela": "speela",
+        "spöka": "spuh kah",
+        "spökar": "spuh kar",
+        "balle": "ball eh",
+        "pungsäck": "poong seck",
+        "lolle": "loo leh",
+        "robbe": "rob eh",
+        "kalle": "kall leh",
+        "älskar": "elskair",
+        "trafik": "trahfeek",
+        "trafiken": "trahfeek en",
+        "fika": "feeka",
+        "gå": "gall",
+        "jag": "yahg",
+        "hon": "holn",
+        "där": "dare",
+        "lät": "let",
+        "mig": "may",
+        "ju": "you",
+        "dig": "day",
+        "er": "eer"}
+# TODO: å -> all
+
+def tts(text):
+        translated = ""
+        split_text = text.split()
+        for split in split_text:
+                if split in tts_dict:
+                        translated += tts_dict[split] + " "
+                else:
+                        translated += split + " "
+        return translated
