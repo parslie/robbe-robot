@@ -146,6 +146,30 @@ class Meme(Command):
             await self.add(client, user, channel, meme_type, check, timeout)
 
 
+# Voice Channel Commands
+
+
+class Play(Command):
+    def __init__(self):
+        super().__init__("play", "Plays a video in the voice channel you're in.")
+        self.queue = []
+
+    def usage(self):
+        return f"{self.name} [URL]"
+
+    def details(self):
+        return f"""{self.description}
+        
+        **[URL]** - The URL to the YouTube video you want to play."""
+
+    async def execute(self, client, user, channel, arguments):
+        super().execute(client, user, channel, arguments)
+
+        if len(arguments) != 1: return
+
+        url = arguments[0]
+        
+
 # Misc
 
 
@@ -309,5 +333,6 @@ Dice()
 Donken()
 Erik()
 Plans()
+Play()
 Meme()
 Source()
