@@ -128,6 +128,7 @@ tts_dict = {
         "i": "e",
         "idag": "e daag",
         "igår": "e gore",
+        "inte": "inteh",
         "isse": "issuh",
         "jag": "yahg",
         "ju": "you",
@@ -136,11 +137,14 @@ tts_dict = {
         "lolle": "loo leh",
         "lärdom": "lairdom",
         "lät": "let",
+        "man": "mahn",
         "meddela": "meadeela",
         "mig": "may",
         "mot": "mote",
         "måste": "mohsteh",
         "också": "och so",
+        "okej": "okay",
+        "produktiva": "product eva",
         "produktivt": "product eeft",
         "pungsäck": "poong seck",
         "robbe": "rob eh",
@@ -157,16 +161,22 @@ tts_dict = {
         "vi": "ve",
         "våra": "vora",
         "älskar": "elskair",
-        "är": "air"
-}
-# TODO: å -> all
+        "är": "air"}
+punctuation = [".", ",", "!", "?", ":"]
 
 def tts(text):
         translated = ""
-        split_text = text.replace(",", " ,").split()
-        for split in split_text:
-                if split in tts_dict:
-                        translated += tts_dict[split] + " "
+        
+        for p in punctuation:
+                text = text.replace(p, f" {p} ")
+        text = text.split()
+
+        for split in processed_text:
+                if split in punctuation:
+                        translated += split
+                else if split in tts_dict:
+                        translated += " " + tts_dict[split]
                 else:
-                        translated += split + " "
+                        translated += " " + split
+
         return translated
