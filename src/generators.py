@@ -170,7 +170,7 @@ def tts(text):
                 text = text.replace(p, f" {p} ")
         text = text.split()
 
-        for split in processed_text:
+        for split in text:
                 if split in punctuation:
                         translated += split
                 elif split in tts_dict:
