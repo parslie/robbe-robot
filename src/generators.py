@@ -141,19 +141,23 @@ tts_dict = {"att": "aht",
         "mig": "may",
         "mot": "mote",
         "måste": "mohsteh",
+        "när": "nair",
         "också": "och so",
         "okej": "okay",
         "produktiva": "product eva",
         "produktivt": "product eeft",
         "pungsäck": "poong seck",
+        "på": "poe",
         "robbe": "rob eh",
         "sig": "say",
         "spela": "speela",
         "spöka": "spuh kah",
         "spökar": "spuh kar",
         "staben": "staaaben",
+        "sär": "sair",
         "trafik": "trahfeek",
         "trafiken": "trahfeek en",
+        "tro": "troh",
         "valle": "valleh",
         "varit": "var it",
         "vetenskap": "vet en skaap",
@@ -165,7 +169,8 @@ punctuation = [".", ",", "!", "?", ":"]
 
 def tts(text):
         translated = ""
-        
+
+        text = text.lower()
         for p in punctuation:
                 text = text.replace(p, f" {p} ")
         text = text.split()
