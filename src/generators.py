@@ -104,8 +104,7 @@ def dice(sides=6):
         return random.randint(1, sides)
 
 
-tts_dict = {
-        "att": "aht",
+tts_dict = {"att": "aht",
         "balle": "ball eh",
         "bissenisse": "bissuh nissuh",
         "coolt": "cooled",
