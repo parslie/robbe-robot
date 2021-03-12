@@ -104,8 +104,7 @@ def dice(sides=6):
         return random.randint(1, sides)
 
 
-tts_dict = {
-        "att": "aht",
+tts_dict = {"att": "aht",
         "balle": "ball eh",
         "bissenisse": "bissuh nissuh",
         "coolt": "cooled",
@@ -174,7 +173,7 @@ def tts(text):
         for split in processed_text:
                 if split in punctuation:
                         translated += split
-                else if split in tts_dict:
+                elif split in tts_dict:
                         translated += " " + tts_dict[split]
                 else:
                         translated += " " + split
