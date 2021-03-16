@@ -85,7 +85,7 @@ donken_menus = ["Big Mac & Co", "Trippel Cheese & Co", "McFeast & Co", "El Maco 
 
 donken_desserts = ["McFlurry Salted Caramel", "McFlurry Oreo", "McFlurry Daim",
         "Unicorn Freakshake", "Frappé Mocha", "Frappé Caramel",
-        "Äppelpaj", "Sundae Deluxe Daim", "Ice Cream with Strawberry Topping",
+        "Apple Pie", "Sundae Deluxe Daim", "Ice Cream with Strawberry Topping",
         "Ice Cream with Chocolate Topping", "Ice Cream with Caramel Topping"]
 
 def donken(seed):
