@@ -80,16 +80,18 @@ def erik():
 
 donken_menus = ["Big Mac & Co", "Trippel Cheese & Co", "McFeast & Co", "El Maco & Co",
         "Chicken McNuggets & Co", "Chicken McFeast & Co", "Chicken El Maco & Co",
-        "McVegan & Co", "Veggie El Maco & Co"]
+        "McVegan & Co", "Veggie El Maco & Co", "Tasty & Co", "QP Cheese & Co",
+        "Chicken Tasty & Co"]
 
 donken_desserts = ["McFlurry Salted Caramel", "McFlurry Oreo", "McFlurry Daim",
         "Unicorn Freakshake", "Frappé Mocha", "Frappé Caramel",
-        "Äppelpaj", "Sundae Deluxe Daim"]
+        "Äppelpaj", "Sundae Deluxe Daim", "Ice Cream with Strawberry Topping",
+        "Ice Cream with Chocolate Topping", "Ice Cream with Caramel Topping"]
 
 def donken(seed):
         curr_date = datetime.datetime.now()
         oldstate = random.getstate()
-        random.seed(seed + curr_date.strftime("%j%Y%H"))
+        random.seed(curr_date.strftime("%H") + seed + curr_date.strftime("%j%Y"))
 
         # TODO: add more options
         menu = random.choice(donken_menus)
