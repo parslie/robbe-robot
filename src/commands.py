@@ -1,6 +1,7 @@
 import discord
 import generators
 import counter
+import quote
 import meme
 
 cmds = dict()
@@ -163,6 +164,78 @@ class TTS(Command):
         await channel.send(translated, tts=True)
 
 
+class Quote(Command):
+    def __init__(self):
+        super().__init__("quote", "Generates a random quote from a given set.")
+
+    def usage(self):
+        return f"{self.name} [MODE] [ARGs...]"
+
+    def details(self):
+        return f"""{self.description} New quotes or sets can be added.
+        
+            **[MODE]** - **add, remove,** or **list**
+            **[ARGs...]** - different for each mode
+
+            **[ARGs...]** for **add** mode are **[SET] [QUOTE]**.
+            **[ARGs...]** for **remove** mode are **[SET] [INDEX]**
+            **[ARGs...]** for **list** modes is **[SET]**
+            
+            **[SET]** - The name of a set to act upon.
+            **[INDEX]** - The index of the quote to act upon.
+            **[QUOTE]** -  The quote to add."""
+            
+    async def add(self, channel, arguments):
+        if len(arguments) > 3: return
+        set_id = arguments[1]
+        new_quote = arguments[2]
+
+        if quote.add(set_id, new_quote):
+            self.send_message(channel, f"Successfully added quote to {set_id}!")
+        else:
+            self.send_message(channel, f"Something somehow went wrong when trying to add quote to {set_id}!")
+            
+    async def remove(self, channel, arguments):
+        if len(arguments) > 3: return
+        set_id = arguments[1]
+        quote_index = arguments[2]
+
+        removed_quote = quote.remove(set_id, quote_index)
+        if removed_quote != None:
+            self.send_message(channel, f"Successfully removed {removed_quote} from {set_id}!")
+        else:
+            self.send_message(channel, f"A quote of index {quote_index} does not exist in set {set_id}!")
+
+    async def list(self, channel, arguments):
+        if len(arguments) == 2:
+            set_id = arguments[1]
+            self.send_message(channel, f"Available quotes in {set_id}", quote.list_quotes(set_id))
+        elif len(arguments) == 1:
+            self.send_message(channel, "Available sets", quote.list_sets())
+    
+    async def show(self, channel, set_id):
+        gotten_quote = quote.get_quote(set_id)
+        if gotten_quote != None:
+            await self.send_message(channel, gotten_quote, f"- {set_id}")
+        else:
+            await self.send_message(channel, f"The set {set_id} does not exist!")
+
+    async def execute(self, client, user, channel, arguments):
+        await super().execute(client, user, channel, arguments)
+
+        if len(arguments) < 1: return
+
+        mode = arguments[0]
+        if mode == "add":
+            await self.add(channel, arguments)
+        elif mode == "remove":
+            await self.remove(channel, arguments)
+        elif mode == "list":
+            await self.list(channel, arguments)
+        else:
+            await self.show(channel, mode)
+
+
 # Voice Channel Commands
 
 
@@ -184,7 +257,7 @@ class Play(Command):
 
         if len(arguments) != 1: return
 
-        url = arguments[0]
+        #url = arguments[0]
         
 
 # Misc
@@ -250,7 +323,7 @@ class Counter(Command):
             **[ARGs...]** for **create** mode are **[ID] [TITLE]**
             **[ARGs...]** for **all other** modes is **[ID]**
             
-            **[ID]** - The ID code for the counter.
+            **[ID]** - The ID for the counter to act upon.
             **[TITLE]** -  The name for the counter."""
 
     async def create(self, channel, arguments):
@@ -349,8 +422,9 @@ Counter()
 Dice()
 Donken()
 Erik()
+Meme()
 Plans()
 #Play()
-Meme()
+Quote()
 Source()
 TTS()
