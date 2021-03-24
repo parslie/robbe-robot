@@ -16,5 +16,7 @@ linux:
 	rm -f $(BIN_FOLDER)/$(TARGET_NAME)
 	ln -s $(TARGET_FOLDER)/$(TARGET_NAME) $(BIN_FOLDER)/$(TARGET_NAME)
 
-window:
-	echo "TODO: implement make instructions for windows"
+rpi:	
+	@-/bin/false && ([ pkill -f python ] && echo "Successfully killed python...") || echo "Failed to kill python..."
+	make linux
+	robbe &
