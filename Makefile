@@ -17,6 +17,6 @@ linux:
 	ln -s $(TARGET_FOLDER)/$(TARGET_NAME) $(BIN_FOLDER)/$(TARGET_NAME)
 
 rpi:	
-	@-/bin/false && ([ pkill -f python ] && echo "Successfully killed python...") || echo "Failed to kill python..."
+	killall -q python3
 	make linux
 	robbe &
