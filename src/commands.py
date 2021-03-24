@@ -191,34 +191,42 @@ class Quote(Command):
         new_quote = arguments[2]
 
         if quote.add(set_id, new_quote):
-            self.send_message(channel, f"Successfully added quote to {set_id}!")
+            await self.send_message(channel, f"Successfully added quote to set '{set_id}'!")
         else:
-            self.send_message(channel, f"Something somehow went wrong when trying to add quote to {set_id}!")
+            await self.send_message(channel, f"Something somehow went wrong when trying to add quote to set '{set_id}'!")
             
     async def remove(self, channel, arguments):
         if len(arguments) > 3: return
         set_id = arguments[1]
-        quote_index = arguments[2]
+        quote_index = int(arguments[2])
 
         removed_quote = quote.remove(set_id, quote_index)
         if removed_quote != None:
-            self.send_message(channel, f"Successfully removed {removed_quote} from {set_id}!")
+            await self.send_message(channel, f"Successfully removed {removed_quote} from set '{set_id}'!")
         else:
-            self.send_message(channel, f"A quote of index {quote_index} does not exist in set {set_id}!")
+            await self.send_message(channel, f"A quote of index {quote_index} does not exist in set '{set_id}'!")
 
     async def list(self, channel, arguments):
         if len(arguments) == 2:
             set_id = arguments[1]
-            self.send_message(channel, f"Available quotes in {set_id}", quote.list_quotes(set_id))
+            quote_string = quote.list_quotes(set_id)
+            if quote_string == None:
+                await self.send_message(channel, f"The set '{set_id}' does not exist!")
+            else:
+                await self.send_message(channel, f"Available quotes in set '{set_id}'", quotes)
         elif len(arguments) == 1:
-            self.send_message(channel, "Available sets", quote.list_sets())
+            set_string = quote.list_sets()
+            if set_string == None:
+                await self.send_message(channel, "There are no available sets!")
+            else:
+                await self.send_message(channel, "Available sets", set_string)
     
     async def show(self, channel, set_id):
         gotten_quote = quote.get_quote(set_id)
         if gotten_quote != None:
             await self.send_message(channel, gotten_quote, f"- {set_id}")
         else:
-            await self.send_message(channel, f"The set {set_id} does not exist!")
+            await self.send_message(channel, f"The set '{set_id}' does not exist!")
 
     async def execute(self, client, user, channel, arguments):
         await super().execute(client, user, channel, arguments)
