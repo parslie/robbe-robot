@@ -5,4 +5,4 @@ BINDIR=$(dirname $BINPATH)
 
 cd $BINDIR
 source $BINDIR/venv/bin/activate
-python3 $BINDIR/main.py $@
+python3 $BINDIR/main.py $@ &> $BINDIR/output.txt
