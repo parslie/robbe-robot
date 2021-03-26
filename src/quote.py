@@ -2,65 +2,53 @@ import random
 import json
 import os
 
-custom_fn = "custom_quotes.json"
-default_fn = "default_quotes.json"
-custom_quotes = dict()
-default_quotes = dict()
+file_name = "quotes.json"
+quotes = dict()
 
 
-def add(set_id, quote):
-    if set_id not in custom_quotes:
-        custom_quotes[set_id] = []
-    custom_quotes[set_id].append(quote)
+def add(type_id, quote):
+    if type_id not in quotes:
+        quotes[type_id] = []
+    quotes[type_id].append(quote)
     save()
 
 
-def remove(set_id, quote_index):
-    if set_id not in custom_quotes:
-        raise Exception(f'There is no custom quote of type "{set_id}"!')
-    elif len(custom_quotes[set_id]) < quote_index + 1:
-        raise Exception(f'No custom quote of index {quote_index} exists!')
+def remove(type_id, quote_index):
+    if type_id not in quotes:
+        raise Exception(f'There is no quote of type "{type_id}"!')
+    elif len(quotes[type_id]) < quote_index + 1:
+        raise Exception(f'No quote of index {quote_index} exists!')
 
-    custom_quotes[set_id].pop(quote_index)
+    if len(quotes[type_id]) == 1:
+        quotes.pop(type_id)
+    else:
+        quotes[type_id].pop(quote_index)
     save()
 
 
-def get(set_id):
-    quotes = []
-    if set_id in custom_quotes:
-        quotes.extend(custom_quotes[set_id])
-    if set_id in default_quotes:
-        quotes.extend(default_quotes[set_id])
-    
-    if len(quotes) == 0:
+def get(type_id):
+    if type_id not in quotes:
         return None
-    return random.choice(quotes)
+    return random.choice(quotes[type_id])
 
 
-def get_all(set_id):
-    return custom_quotes.get(set_id, []), default_quotes.get(set_id, [])
+def get_all(type_id):
+    if type_id not in quotes:
+        return []
+    return quotes[type_id]
 
 
 def get_types():
-    types = list(custom_quotes.keys())
-    for key in default_quotes.keys():
-        if key not in types:
-            types.append(key)
-    return types
+    return quotes.keys()
 
 
 def save():
-    with open(custom_fn, 'w', encoding='utf-8') as f:
-        f.write(json.dumps(custom_quotes))
+    with open(file_name, 'w', encoding='utf-8') as f:
+        f.write(json.dumps(quotes))
 
 
 def init():
-    global default_quotes
-    global custom_quotes
-
-    if os.path.exists(default_fn):
-        with open(default_fn, 'r', encoding='utf-8') as f:
-            default_quotes = json.loads(f.read())
-    if os.path.exists(custom_fn):
-        with open(custom_fn, 'r', encoding='utf-8') as f:
-            custom_quotes = json.loads(f.read())
+    global quotes
+    if os.path.exists(file_name):
+        with open(file_name, 'r', encoding='utf-8') as f:
+            quotes = json.loads(f.read())

@@ -175,7 +175,7 @@ class Quote(Command):
 
         try:
             quote.remove(type_id, q_index)
-            await self.send_message(channel, f'Successfully removed custom index {q_index} from "{type_id}"!')
+            await self.send_message(channel, f'Successfully removed index {q_index} from "{type_id}"!')
         except Exception as e:
             await self.send_message(channel, str(e))
 
@@ -183,22 +183,22 @@ class Quote(Command):
         if len(arguments) == 2:
             type_id = arguments[1]
 
-            customs, defaults = quote.get_all(type_id)
-            custom_str = ''
-            for i in range(len(customs)):
-                custom_str += f'**{i}** - "{customs[i]}"\n'
+            quotes = quote.get_all(type_id)
+            if len(quotes) == 0:
+                await self.send_message(channel, f'There are no quotes of type "{type_id}"!')
+            else:
+                quote_str = ''
+                for i in range(len(quotes)):
+                    quote_str += f'**{i}**: "{quotes[i]}"\n'
 
-            if len(customs) != 0:
-                customs = '**Custom quote indices**:\n' + customs
-
-            await self.send_message(channel, f'Type "{type_id}" has {len(customs)} custom quotes and {len(defaults)} default quotes!', custom_str)
+                await self.send_message(channel, f'Quotes of type "{type_id}":', quote_str)
         elif len(arguments) == 1:
             type_str = ''
             for t in quote.get_types():
                 type_str += f'**{t}**, '
-            type_str[:-2]
+            type_str = type_str[:-2]
 
-            if len(set_text) != 0:
+            if len(type_str) != 0:
                 await self.send_message(channel, 'Available quote types:', type_str)
             else:
                 await self.send_message(channel, 'There are no quote types!')
