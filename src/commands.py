@@ -146,71 +146,70 @@ class Quote(Command):
         return f"{self.name} [MODE] [ARGs...]"
 
     def details(self):
-        return f"""{self.description} New quotes or sets can be added.
+        return f"""{self.description} New quotes or quote types can be added.
         
-            **[MODE]** - **add, remove,** or **list**
+            **[MODE]** - can be **add, remove, list** or a **quote type**
             **[ARGs...]** - different for each mode
 
-            **[ARGs...]** for **add** mode are **[SET] [QUOTE]**.
-            **[ARGs...]** for **remove** mode are **[SET] [INDEX]**
-            **[ARGs...]** for **list** modes is **[SET]**
+            **[ARGs...]** for **add** mode are **[TYPE] [QUOTE]**.
+            **[ARGs...]** for **remove** mode are **[TYPE] [INDEX]**
+            **[ARGs...]** for **list** modes is **[TYPE]** or **nothing**
+            **[ARGs...]** for a **quote type** is **nothing**
             
-            **[SET]** - The name of a set to act upon.
+            **[TYPE]** - The name of a type to act upon.
             **[INDEX]** - The index of the quote to act upon.
             **[QUOTE]** -  The quote to add."""
             
     async def add(self, channel, arguments):
         if len(arguments) != 3: return
-        set_id = arguments[1]
+        type_id = arguments[1]
         q = arguments[2]
 
-        quote.add(set_id, q)
-        await self.send_message(channel, f'Successfully added "{q}" to "{set_id}"!')
+        quote.add(type_id, q)
+        await self.send_message(channel, f'Successfully added "{q}" to "{type_id}"!')
             
     async def remove(self, channel, arguments):
         if len(arguments) != 3: return
-        set_id = arguments[1]
+        type_id = arguments[1]
         q_index = int(arguments[2])
 
         try:
-            quote.remove(set_id, q_index)
-            await self.send_message(channel, f'Successfully removed custom index {q_index} from "{set_id}"!')
+            quote.remove(type_id, q_index)
+            await self.send_message(channel, f'Successfully removed custom index {q_index} from "{type_id}"!')
         except Exception as e:
             await self.send_message(channel, str(e))
 
     async def list(self, channel, arguments):
         if len(arguments) == 2:
-            set_id = arguments[1]
+            type_id = arguments[1]
 
-            custom_q, default_q = quote.get_all(set_id)
-            custom_text = ''
-            for i in range(len(custom_q)):
-                custom_text += f'**{i}** - "{custom_q[i]}"\n'
+            customs, defaults = quote.get_all(type_id)
+            custom_str = ''
+            for i in range(len(customs)):
+                custom_str += f'**{i}** - "{customs[i]}"\n'
 
-            if len(custom_text) != 0:
-                custom_text = '**Custom quote indices**:\n' + custom_text
+            if len(customs) != 0:
+                customs = '**Custom quote indices**:\n' + customs
 
-            await self.send_message(channel, f'Type "{set_id}" has {len(custom_q)} custom quotes and {len(default_q)} default quotes!', custom_text)
+            await self.send_message(channel, f'Type "{type_id}" has {len(customs)} custom quotes and {len(defaults)} default quotes!', custom_str)
         elif len(arguments) == 1:
-            sets = quote.get_types()
-
-            set_text = ''
-            for s in sets:
-                set_text += f'**{s}**, '
-            set_text[:-2]
+            type_str = ''
+            for t in quote.get_types():
+                type_str += f'**{t}**, '
+            type_str[:-2]
 
             if len(set_text) != 0:
-                await self.send_message(channel, 'Available quote types:', set_text)
+                await self.send_message(channel, 'Available quote types:', type_str)
             else:
                 await self.send_message(channel, 'There are no quote types!')
     
-    async def show(self, channel, set_id):
-        q = quote.get(set_id)
+    async def show(self, channel, type_id):
+        q = quote.get(type_id)
         
         if q == None:
-            await self.send_message(channel, f'There are no quotes of type "{set_id}"!')
+            await self.send_message(channel, f'There are no quotes of type "{type_id}"!')
         else:
-            await self.send_message(channel, f'"{q}"', f'- {set_id}')
+            await self.send_message(channel, f'"{q}"', f'- {type_id}')
 
     async def execute(self, client, user, channel, arguments):
         await super().execute(client, user, channel, arguments)
