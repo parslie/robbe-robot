@@ -8,6 +8,23 @@ custom_quotes = dict()
 default_quotes = dict()
 
 
+def add(set_id, quote):
+    if set_id not in custom_quotes:
+        custom_quotes[set_id] = []
+    custom_quotes[set_id].append(quote)
+    save()
+
+
+def remove(set_id, quote_index):
+    if set_id not in custom_quotes:
+        raise Exception(f'There is no custom quote of type "{set_id}"!')
+    elif len(custom_quotes[set_id]) < quote_index + 1:
+        raise Exception(f'No custom quote of index {quote_index} exists!')
+
+    custom_quotes[set_id].pop(quote_index)
+    save()
+
+
 def get(set_id):
     quotes = []
     if set_id in custom_quotes:

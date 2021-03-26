@@ -160,10 +160,23 @@ class Quote(Command):
             **[QUOTE]** -  The quote to add."""
             
     async def add(self, channel, arguments):
-        pass
+        if len(arguments) != 3: return
+        set_id = arguments[1]
+        q = arguments[2]
+
+        quote.add(set_id, q)
+        await self.send_message(channel, f'Successfully added "{q}" to "{set_id}"!')
             
     async def remove(self, channel, arguments):
-        pass
+        if len(arguments) != 3: return
+        set_id = arguments[1]
+        q_index = int(arguments[2])
+
+        try:
+            quote.remove(set_id, q_index)
+            await self.send_message(channel, f'Successfully removed custom index {q_index} from "{set_id}"!')
+        except Exception as e:
+            await self.send_message(channel, str(e))
 
     async def list(self, channel, arguments):
         pass
