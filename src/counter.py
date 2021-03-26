@@ -72,7 +72,7 @@ def to_string():
 
 
 def save():
-    file = open(file_name, "w")
+    file = open(file_name, "w", encoding='utf-8')
     file.write(json.dumps(counters))
     file.close()
 
@@ -80,7 +80,7 @@ def save():
 def init():
     global counters
     if os.path.exists(file_name):
-        file = open(file_name, "r")
+        file = open(file_name, "r", encoding='utf-8')
         counters = json.loads(file.read())
         print(counters)
         file.close()

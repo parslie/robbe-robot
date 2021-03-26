@@ -21,7 +21,7 @@ def get(set_id):
 
 
 def save():
-    with open(custom_fn, 'w') as f:
+    with open(custom_fn, 'w', encoding='utf-8') as f:
         f.write(json.dumps(custom_quotes))
 
 
@@ -30,8 +30,8 @@ def init():
     global custom_quotes
 
     if os.path.exists(default_fn):
-        with open(default_fn, 'r') as f:
+        with open(default_fn, 'r', encoding='utf-8') as f:
             default_quotes = json.loads(f.read())
     if os.path.exists(custom_fn):
-        with open(custom_fn, 'r') as f:
+        with open(custom_fn, 'r', encoding='utf-8') as f:
             custom_quotes = json.loads(f.read())
