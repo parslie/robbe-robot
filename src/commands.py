@@ -179,7 +179,30 @@ class Quote(Command):
             await self.send_message(channel, str(e))
 
     async def list(self, channel, arguments):
-        pass
+        if len(arguments) == 2:
+            set_id = arguments[1]
+
+            custom_q, default_q = quote.get_all(set_id)
+            custom_text = ''
+            for i in range(len(custom_q)):
+                custom_text += f'**{i}** - "{custom_q[i]}"\n'
+
+            if len(custom_text) != 0:
+                custom_text = '**Custom quote indices**:\n' + custom_text
+
+            await self.send_message(channel, f'Type "{set_id}" has {len(custom_q)} custom quotes and {len(default_q)} default quotes!', custom_text)
+        elif len(arguments) == 1:
+            sets = quote.get_types()
+
+            set_text = ''
+            for s in sets:
+                set_text += f'**{s}**, '
+            set_text[:-2]
+
+            if len(set_text) != 0:
+                await self.send_message(channel, 'Available quote types:', set_text)
+            else:
+                await self.send_message(channel, 'There are no quote types!')
     
     async def show(self, channel, set_id):
         q = quote.get(set_id)

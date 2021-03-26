@@ -37,6 +37,18 @@ def get(set_id):
     return random.choice(quotes)
 
 
+def get_all(set_id):
+    return custom_quotes.get(set_id, []), default_quotes.get(set_id, [])
+
+
+def get_types():
+    types = list(custom_quotes.keys())
+    for key in default_quotes.keys():
+        if key not in types:
+            types.append(key)
+    return types
+
+
 def save():
     with open(custom_fn, 'w', encoding='utf-8') as f:
         f.write(json.dumps(custom_quotes))
