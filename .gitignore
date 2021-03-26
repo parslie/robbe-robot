@@ -5,4 +5,4 @@
 
 bottoken.py
 *.json
-!quotes_default.json
+!default_quotes.json
