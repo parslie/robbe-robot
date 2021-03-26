@@ -1,9 +1,8 @@
 **/venv/
+**/venvwin/
 **/__pycache__/
 **/.vscode/
 
-**/memes/
-**/emotions/
-
 bottoken.py
 *.json
+!quotes_default.json

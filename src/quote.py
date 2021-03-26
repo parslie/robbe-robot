@@ -1,24 +1,9 @@
-import random
+import json
 
-
-def add(set_id, quote):
-    pass
-
-
-def remove(set_id, quote_id):
-    pass
-
-
-def get_quote(set_id):
-    pass
-
-
-def list_quotes(set_id):
-    pass
-
-
-def list_sets():
-    pass
+custom_fn = "custom_quotes.json"
+default_fn = "default_quotes.json"
+custom_quotes = dict()
+default_quotes = dict()
 
 
 def save():

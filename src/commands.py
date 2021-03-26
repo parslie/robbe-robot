@@ -30,32 +30,6 @@ class Command():
 # Random Generators 
 
 
-class Staben(Command):
-    def __init__(self):
-       super().__init__("staben", "Invokes the power of STABEN!")
-    
-    async def execute(self, client, user, channel, arguments):
-        await super().execute(client, user, channel, arguments)
-
-        if len(arguments) > 0: return
-
-        quote = generators.staben()
-        await self.send_message(channel, quote, "- STABEN")
-
-
-class Erik(Command):
-    def __init__(self):
-       super().__init__("erik", "Tjena, har du tid att snacka eller?")
-    
-    async def execute(self, client, user, channel, arguments):
-        await super().execute(client, user, channel, arguments)
-
-        if len(arguments) > 0: return
-
-        quote = generators.erik()
-        await self.send_message(channel, quote, "- Erik")
-
-
 class Donken(Command):
     def __init__(self):
        super().__init__("donken", "Reads your soul and decides your next donken meal.")
@@ -186,47 +160,16 @@ class Quote(Command):
             **[QUOTE]** -  The quote to add."""
             
     async def add(self, channel, arguments):
-        if len(arguments) > 3: return
-        set_id = arguments[1]
-        new_quote = arguments[2]
-
-        if quote.add(set_id, new_quote):
-            await self.send_message(channel, f"Successfully added quote to set '{set_id}'!")
-        else:
-            await self.send_message(channel, f"Something somehow went wrong when trying to add quote to set '{set_id}'!")
+        pass
             
     async def remove(self, channel, arguments):
-        if len(arguments) > 3: return
-        set_id = arguments[1]
-        quote_index = int(arguments[2])
-
-        removed_quote = quote.remove(set_id, quote_index)
-        if removed_quote != None:
-            await self.send_message(channel, f"Successfully removed {removed_quote} from set '{set_id}'!")
-        else:
-            await self.send_message(channel, f"A quote of index {quote_index} does not exist in set '{set_id}'!")
+        pass
 
     async def list(self, channel, arguments):
-        if len(arguments) == 2:
-            set_id = arguments[1]
-            quote_string = quote.list_quotes(set_id)
-            if quote_string == None:
-                await self.send_message(channel, f"The set '{set_id}' does not exist!")
-            else:
-                await self.send_message(channel, f"Available quotes in set '{set_id}'", quotes)
-        elif len(arguments) == 1:
-            set_string = quote.list_sets()
-            if set_string == None:
-                await self.send_message(channel, "There are no available sets!")
-            else:
-                await self.send_message(channel, "Available sets", set_string)
+        pass
     
     async def show(self, channel, set_id):
-        gotten_quote = quote.get_quote(set_id)
-        if gotten_quote != None:
-            await self.send_message(channel, gotten_quote, f"- {set_id}")
-        else:
-            await self.send_message(channel, f"The set '{set_id}' does not exist!")
+        pass
 
     async def execute(self, client, user, channel, arguments):
         await super().execute(client, user, channel, arguments)
@@ -424,12 +367,10 @@ class Source(Command):
 # Activate Commands
 
 
-Staben()
 Help()
 Counter()
 Dice()
 Donken()
-Erik()
 Meme()
 Plans()
 #Play()
