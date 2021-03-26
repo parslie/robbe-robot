@@ -1,3 +1,4 @@
+import random
 import json
 import os
 
@@ -5,6 +6,18 @@ custom_fn = "custom_quotes.json"
 default_fn = "default_quotes.json"
 custom_quotes = dict()
 default_quotes = dict()
+
+
+def get(set_id):
+    quotes = []
+    if set_id in custom_quotes:
+        quotes.extend(custom_quotes[set_id])
+    if set_id in default_quotes:
+        quotes.extend(default_quotes[set_id])
+    
+    if len(quotes) == 0:
+        return None
+    return random.choice(quotes)
 
 
 def save():

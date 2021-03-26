@@ -169,7 +169,12 @@ class Quote(Command):
         pass
     
     async def show(self, channel, set_id):
-        pass
+        q = quote.get(set_id)
+        
+        if q == None:
+            await self.send_message(channel, f'There are no quotes of type "{set_id}"!')
+        else:
+            await self.send_message(channel, f'"{q}"', f'- {set_id}')
 
     async def execute(self, client, user, channel, arguments):
         await super().execute(client, user, channel, arguments)
