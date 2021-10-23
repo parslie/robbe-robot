@@ -1,5 +1,6 @@
 import discord
 from discord import Colour
+from commands import cmds
 
 PREFIX = '!'
 
@@ -65,4 +66,4 @@ class Client(discord.Client):
                 embed = discord.Embed(title=f'ERROR: {args}', colour=Colour.red())
                 await msg.channel.send(embed=embed)
             else:
-                pass
+                print(cmds)
