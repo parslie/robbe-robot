@@ -66,4 +66,11 @@ class Client(discord.Client):
                 embed = discord.Embed(title=f'ERROR: {args}', colour=Colour.red())
                 await msg.channel.send(embed=embed)
             else:
-                print(cmds)
+                cmd = cmds.get(name, None)
+                
+                if cmd is None:
+                    embed = discord.Embed(title=f'ERROR: the command "{name}" does not exist!', colour=Colour.red())
+                    await msg.channel.send(embed=embed)
+                else:
+                    await cmd.parse_args(args)
+                    await cmd.execute(self, msg.channel, msg.author)
