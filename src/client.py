@@ -1,4 +1,5 @@
 import discord
 
 class Client(discord.Client):
-    pass
+    async def on_ready(self):
+        print(f'Signed in as {self.user}!')
