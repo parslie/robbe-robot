@@ -2,6 +2,7 @@
 **/venvwin/
 **/__pycache__/
 **/.vscode/
+**/oldsrc/
 
 bottoken.py
 *.json
