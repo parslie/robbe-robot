@@ -3,6 +3,7 @@
 **/__pycache__/
 **/.vscode/
 **/oldsrc/
+**/data/
 
 bottoken.py
 *.json

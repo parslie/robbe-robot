@@ -1,5 +1,6 @@
 from discord import *
 import util
+import data
 
 cmds = dict()
 
@@ -18,6 +19,7 @@ class Command:
 def bind_command(cls: Command):
     instance = cls()
     cmds[instance.name] = instance
+    return cls
 
 
 class ModedCommand(Command):
@@ -55,18 +57,17 @@ class Help(Command):
         embed = Embed(title='Commands and Info', description=txt, colour=Colour.green())
         await channel.send(embed=embed)
 
-    
+
 @bind_command
 class Game(ModedCommand):
     def __init__(self):
-        super().__init__('game', 'N/A')
+        super().__init__('game', 'manages gamers and their associated games')
         self.bind_mode('add', self.add)
         self.bind_mode('remove', self.remove)
         self.bind_mode('call', self.call)
         self.bind_mode('list', self.list)
 
-        self.games = dict()
-        # TODO: load in saved games dictionary
+        self.games = data.load('data/game.json')
 
     async def add(self, client: Client, channel: TextChannel, author: User, args: list[str]):
         if len(args) < 2:
@@ -84,6 +85,7 @@ class Game(ModedCommand):
                     txt += f'{user} '
                 self.games[game] = game_list
 
+                data.save(self.games, 'data/game.json')
                 await util.send_success(channel, f'Added users to **{game}**:', txt)
 
             else:  # Warn about already included users
@@ -109,6 +111,7 @@ class Game(ModedCommand):
                 else:
                     self.games.pop(game)
 
+                data.save(self.games, 'data/game.json')
                 await util.send_success(channel, f'Removed users from **{game}**:', txt)
 
             else:  # Warn about already excluded users
