@@ -1,4 +1,5 @@
-from discord import Colour, Embed, User, TextChannel, Client, colour
+from discord import *
+import util
 
 cmds = dict()
 
@@ -10,9 +11,8 @@ class Command:
         self.name = name
         self.description = description
 
-    async def execute(self, client: Client, channel: TextChannel, user: User, args: list[str]):
-        embed = Embed(title=f'ERROR: the command "{self.name}" has not been implemented yet!', colour=Colour.red())
-        await channel.send(embed=embed)
+    async def execute(self, client: Client, channel: TextChannel, author: User, args: list[str]):
+        await util.send_error(channel, f'the command "{self.name}" has not been implemented yet')
 
 
 def bind_command(cls: Command):
@@ -28,18 +28,16 @@ class ModedCommand(Command):
     def bind_mode(self, name, func):
         self.modes[name] = func
 
-    async def execute(self, client: Client, channel: TextChannel, user: User, args: list[str]):
+    async def execute(self, client: Client, channel: TextChannel, author: User, args: list[str]):
         if not args:
-            embed = Embed(title=f'ERROR: you need to specify a mode for the command "{self.name}"!', colour=Colour.red())
-            await channel.send(embed=embed)
+            await util.send_error(channel, f'you need to specify a mode for the command "{self.name}"')
         else:
             mode = args[0]
             
             if mode not in self.modes.keys():
-                embed = Embed(title=f'ERROR: "{mode}" is not a valid mode for the command "{self.name}"!', colour=Colour.red())
-                await channel.send(embed=embed)
+                await util.send_error(channel, f'"{mode}" is not a valid mode for the command "{self.name}"')
             else:
-                await self.modes[mode](client, channel, user, args[1:])
+                await self.modes[mode](client, channel, author, args[1:])
 
 #####################
 # Command definitions
@@ -49,7 +47,7 @@ class Help(Command):
     def __init__(self):
         super().__init__('help', 'shows all commands and info about the bot')
 
-    async def execute(self, client: Client, channel: TextChannel, user: User, args: list[str]):
+    async def execute(self, client: Client, channel: TextChannel, author: User, args: list[str]):
         txt = ''
         for cmd in cmds.values():
             txt += f'**{cmd.name}** - {cmd.description}\n'
@@ -70,38 +68,55 @@ class Game(ModedCommand):
         self.games = dict()
         # TODO: load in saved games dictionary
 
-    async def add(self, client: Client, channel: TextChannel, user: User, args: list[str]):
-        if len(args) != 2:
-            embed = Embed('ERROR: the mode "add" needs exactly 2 arguments!', colour=Colour.red())
-            await channel.send(embed=embed)
+    async def add(self, client: Client, channel: TextChannel, author: User, args: list[str]):
+        if len(args) < 2:
+            await util.send_error(channel, 'the mode "add" needs at least 2 arguments')
 
         else:  # Add user to game list
             game = args[0]
-            user_to_add = args[1]
             game_list = self.games.get(game, [])
+            users = [x for x in args[1:] if x not in game_list]
 
-            if user_to_add not in game_list:
-                game_list.append(user_to_add)
+            if users:  # Add all users to game list
+                txt = ''
+                for user in users:
+                    game_list.append(user)
+                    txt += f'{user} '
                 self.games[game] = game_list
 
-    async def remove(self, client: Client, channel: TextChannel, user: User, args: list[str]):
-        if len(args) != 2:
-            embed = Embed('ERROR: the mode "remove" needs exactly 2 arguments!', colour=Colour.red())
-            await channel.send(embed=embed)
+                await util.send_success(channel, f'Added users to **{game}**:', txt)
+
+            else:  # Warn about already included users
+                await util.send_warning(channel, f'All of the specified users were already in **{game}**!')
+
+    async def remove(self, client: Client, channel: TextChannel, author: User, args: list[str]):
+        if len(args) < 2:
+            await util.send_error(channel, 'the mode "remove" needs at least 2 arguments')
 
         else:  # Remove user from game list
             game = args[0]
-            user_to_rem = args[1]
             game_list = self.games.get(game, [])
+            users = [x for x in args[1:] if x in game_list]
 
-            if user_to_rem in game_list:
-                game_list.remove(user_to_rem)
-                self.games[game] = game_list
+            if users:  # Remove all users from game list
+                txt = ''
+                for user in users:
+                    game_list.remove(user)
+                    txt += f'{user} '
 
-    async def call(self, client: Client, channel: TextChannel, user: User, args: list[str]):
+                if game_list:  # Remove game if no users are in list
+                    self.games[game] = game_list
+                else:
+                    self.games.pop(game)
+
+                await util.send_success(channel, f'Removed users from **{game}**:', txt)
+
+            else:  # Warn about already excluded users
+                await util.send_warning(channel, f'None of the specified users were in **{game}**!')
+
+    async def call(self, client: Client, channel: TextChannel, author: User, args: list[str]):
         if len(args) != 1:
-            embed = Embed('ERROR: the mode "call" needs exactly 1 arguments!', colour=Colour.red())
-            await channel.send(embed=embed)
+            await util.send_error(channel, 'the mode "call" needs exactly 1 arguments')
         
         else:  # Call for all epic gamers to game
             game = args[0]
@@ -109,23 +124,25 @@ class Game(ModedCommand):
 
             if game_list:
                 txt = f'Calling all epic gamers to play **{game}**!\n'
-                for user_to_call in game_list:
-                    txt += f'{user_to_call} '
-
+                for user in game_list:
+                    txt += f'{user} '
                 await channel.send(content=txt)
 
-    async def list(self, client: Client, channel: TextChannel, user: User, args: list[str]):
+            else:
+                await util.send_warning(channel, f'No users have been added to **{game}**!')
+
+    async def list(self, client: Client, channel: TextChannel, author: User, args: list[str]):
         if len(args) != 0:
-            embed = Embed('ERROR: the mode "list" needs exactly 0 arguments!', colour=Colour.red())
-            await channel.send(embed=embed)
+            await util.send_error(channel, 'the mode "list" needs exactly 0 arguments')
+
+        elif not self.games:  # Print warning for empty games list
+            await util.send_warning(channel, 'There are no games to list!')
 
         else:  # Print all game lists
             txt = ''
             for game, game_list in self.games.items():
                 txt += f'**{game}** - '
-                for user_to_list in game_list:
-                    txt += f'{user_to_list} '
+                for user in game_list:
+                    txt += f'{user} '
                 txt += '\n'
-
-            embed = Embed(title='Game Lists', description=txt, colour=Colour.green())
-            await channel.send(embed=embed)
+            await util.send_success(channel, 'Game Lists', txt)

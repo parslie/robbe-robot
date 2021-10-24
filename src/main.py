@@ -1,5 +1,5 @@
 import os
-from client import Client
+from client import BotClient
 
 if __name__ == '__main__':
     token = os.getenv('DISCORD_TOKEN')
@@ -9,5 +9,5 @@ if __name__ == '__main__':
         quit(1)
 
     print('Signing in bot...')
-    client = Client()
+    client = BotClient()
     client.run(token)

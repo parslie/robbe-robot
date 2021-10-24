@@ -1,5 +1,4 @@
-import discord
-from discord import Colour
+from discord import *
 from commands import cmds
 
 PREFIX = '!'
@@ -51,11 +50,11 @@ def process_cmd(cmd: str):
     return name, args
 
 
-class Client(discord.Client):
+class BotClient(Client):
     async def on_ready(self):
         print(f'Signed in as {self.user}!')
 
-    async def on_message(self, msg: discord.Message):
+    async def on_message(self, msg: Message):
         if msg.author == self.user:
             return  # Do not respond to self
 
@@ -63,13 +62,13 @@ class Client(discord.Client):
             name, args = process_cmd(msg.content[1:])
             
             if name is None:
-                embed = discord.Embed(title=f'ERROR: {args}', colour=Colour.red())
+                embed = Embed(title=f'ERROR: {args}', colour=Colour.red())
                 await msg.channel.send(embed=embed)
             else:
                 cmd = cmds.get(name, None)
                 
                 if cmd is None:
-                    embed = discord.Embed(title=f'ERROR: the command "{name}" does not exist!', colour=Colour.red())
+                    embed = Embed(title=f'ERROR: the command "{name}" does not exist!', colour=Colour.red())
                     await msg.channel.send(embed=embed)
                 else:
                     await cmd.execute(self, msg.channel, msg.author, args)
