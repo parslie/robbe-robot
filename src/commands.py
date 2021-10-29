@@ -1,4 +1,5 @@
 from discord import *
+from typing import List, Dict
 import util
 import data
 
@@ -12,7 +13,7 @@ class Command:
         self.name = name
         self.description = description
 
-    async def execute(self, client: Client, channel: TextChannel, author: User, args: list[str]):
+    async def execute(self, client: Client, channel: TextChannel, author: User, args: List[str]):
         await util.send_error(channel, f'the command "{self.name}" has not been implemented yet')
 
 
@@ -30,7 +31,7 @@ class ModedCommand(Command):
     def bind_mode(self, name, func):
         self.modes[name] = func
 
-    async def execute(self, client: Client, channel: TextChannel, author: User, args: list[str]):
+    async def execute(self, client: Client, channel: TextChannel, author: User, args: List[str]):
         if not args:
             await util.send_error(channel, f'you need to specify a mode for the command "{self.name}"')
         else:
@@ -49,7 +50,7 @@ class Help(Command):
     def __init__(self):
         super().__init__('help', 'shows all commands and info about the bot')
 
-    async def execute(self, client: Client, channel: TextChannel, author: User, args: list[str]):
+    async def execute(self, client: Client, channel: TextChannel, author: User, args: List[str]):
         txt = ''
         for cmd in cmds.values():
             txt += f'**{cmd.name}** - {cmd.description}\n'
@@ -69,7 +70,7 @@ class Game(ModedCommand):
 
         self.games = data.load('data/game.json')
 
-    async def add(self, client: Client, channel: TextChannel, author: User, args: list[str]):
+    async def add(self, client: Client, channel: TextChannel, author: User, args: List[str]):
         if len(args) < 2:
             await util.send_error(channel, 'the mode "add" needs at least 2 arguments')
 
@@ -91,7 +92,7 @@ class Game(ModedCommand):
             else:  # Warn about already included users
                 await util.send_warning(channel, f'All of the specified users were already in **{game}**!')
 
-    async def remove(self, client: Client, channel: TextChannel, author: User, args: list[str]):
+    async def remove(self, client: Client, channel: TextChannel, author: User, args: List[str]):
         if len(args) < 2:
             await util.send_error(channel, 'the mode "remove" needs at least 2 arguments')
 
@@ -117,7 +118,7 @@ class Game(ModedCommand):
             else:  # Warn about already excluded users
                 await util.send_warning(channel, f'None of the specified users were in **{game}**!')
 
-    async def call(self, client: Client, channel: TextChannel, author: User, args: list[str]):
+    async def call(self, client: Client, channel: TextChannel, author: User, args: List[str]):
         if len(args) != 1:
             await util.send_error(channel, 'the mode "call" needs exactly 1 arguments')
         
@@ -134,7 +135,7 @@ class Game(ModedCommand):
             else:
                 await util.send_warning(channel, f'No users have been added to **{game}**!')
 
-    async def list(self, client: Client, channel: TextChannel, author: User, args: list[str]):
+    async def list(self, client: Client, channel: TextChannel, author: User, args: List[str]):
         if len(args) != 0:
             await util.send_error(channel, 'the mode "list" needs exactly 0 arguments')
 
