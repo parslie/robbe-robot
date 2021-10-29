@@ -1,5 +1,6 @@
 from discord import *
-from typing import List, Dict
+from typing import List
+import random
 import util
 import data
 
@@ -55,8 +56,8 @@ class Help(Command):
 
     def help(self) -> str:
         return '''
-               Shows all commands and info about the bot. Can also show info about a specific command.
-               Usage: **help [cmd]**
+                Shows all commands and info about the bot. Can also show info about a specific command.
+                Usage: **help [cmd]**
                '''
 
     async def execute(self, client: Client, channel: TextChannel, author: User, args: List[str]):
@@ -119,7 +120,7 @@ class Game(ModedCommand):
         if len(args) < 2:
             await util.send_error(channel, 'The mode **add** needs at least 2 arguments')
 
-        else:  # Add user to game list
+        else:  # Add user to game list # TODO: add safety check to see if the users are actually users
             game = args[0]
             game_list = self.games.get(game, [])
             users = [x for x in args[1:] if x not in game_list]
@@ -195,3 +196,152 @@ class Game(ModedCommand):
                     txt += f'{user} '
                 txt += '\n'
             await util.send_success(channel, 'Game Lists', txt)
+
+@bind_command
+class Quote(ModedCommand):
+    def __init__(self):
+        super().__init__('quote', 'categorizes and prints out quotes')
+        self.bind_mode('add', self.add)
+        self.bind_mode('remove', self.remove)
+        self.bind_mode('print', self.print)
+        self.bind_mode('list', self.list)
+
+        self.quotes = data.load('data/quotes.json')
+
+    def help(self):
+        return '''
+                Categorizes and prints out quotes.
+                Usage: **quote [mode]**
+                Modes: **add**, **remove**, **print** and **list**
+
+                **Add mode:**
+                Add a quote of a specific type. Multiple quotes can be added at once.
+                Usage: **quote add [type] [quote...]**
+                Example: **quote add staben "STABEN kan häfva en tsunami"**
+
+                **Remove mode:**
+                Remove a quote of a specific type. Multiple quotes can be removed at once.
+                Usage: **quote remove [type] [index...]**
+                Example: **quote remove staben 0**
+                WARNING: **REMOVING A STABEN QUOTE IS SACRILEGE, AND WILL RESULT IN SEVERE PUNISHMENT**
+                
+                **Print mode:**
+                Prints a random quote of a specific type.
+                Usage: **quote print [type]**
+                Example: **quote print staben**
+                
+                **List mode:**
+                Lists all existing quote types or all quotes of a specific type.
+                Usage: **quote list [type]**
+                Example: **quote list**
+                Example: **quote list staben**
+               '''
+
+    async def add(self, client: Client, channel: TextChannel, author: User, args: List[str]):
+        if len(args) < 2:
+            await util.send_error(channel, 'The mode **add** needs at least 2 arguments')
+
+        # Add all specified quotes
+        else:
+            quote_type = args[0]
+            new_quotes = args[1:]
+
+            quotes = self.quotes.get(quote_type, [])
+            for new_quote in new_quotes:
+                quotes.append(new_quote)
+            self.quotes[quote_type] = quotes
+
+            await util.send_success(channel, f'Added **{len(new_quotes)}** new quotes of type **{quote_type}**')
+            data.save(self.quotes, 'data/quotes.json')
+
+    async def remove(self, client: Client, channel: TextChannel, author: User, args: List[str]):
+        if len(args) < 2:
+            await util.send_error(channel, 'The mode **remove** needs at least 2 arguments')
+
+        # Remove all specified quotes
+        else:
+            quote_type = args[0]
+            quote_indices = args[1:]
+            quotes = self.quotes.get(quote_type, [])
+            has_invalid_index = False
+
+            # Check for invalid indices
+            for i, quote_index in enumerate(quote_indices):
+                if not quote_index.isnumeric() or int(quote_index) >= len(quotes):
+                    has_invalid_index = True
+                    break
+                else:
+                    quote_indices[i] = int(quote_index)
+
+            # Remove all indices from quote list
+            if not has_invalid_index:
+                quote_indices.sort(reverse=True)  # Makes it remove indices from back to front
+                for quote_index in quote_indices:
+                    quotes.pop(quote_index)
+                self.quotes[quote_type] = quotes
+
+                await util.send_success(channel, f'Removed **{len(quote_indices)}** quote(s) of type **{quote_type}**')
+                data.save(self.quotes, 'data/quotes.json')
+
+            # Warn against invalid indices
+            else:
+                quotes = self.quotes.get(quote_type, [])
+                await util.send_warning(channel, f'There are only **{len(quotes)}** quote(s) of type **{quote_type}**', 'You might have entered and out-of-range or non-integer index.')
+
+    async def print(self, client: Client, channel: TextChannel, author: User, args: List[str]):
+        if len(args) != 1:
+            await util.send_error(channel, 'The mode **print** needs exactly 1 argument')
+
+        # Print a random quote of a specific type
+        else:
+            quote_type = args[0]
+            quotes = self.quotes.get(quote_type, [])
+
+            # Warn against empty quote type
+            if not quotes:
+                await util.send_warning(channel, f'There are no quotes of type **{quote_type}**')
+
+            # Get and print a random quote
+            else:
+                quote = random.choice(quotes)
+                await util.send_success(channel, quote, f'- {quote_type}')
+
+    async def list(self, client: Client, channel: TextChannel, author: User, args: List[str]):
+        if len(args) > 1:
+            await util.send_error(channel, 'The mode **list** needs 0 or 1 argument')
+
+        # List all quotes of a specific type
+        elif args:
+            quote_type = args[0]
+            quotes = self.quotes.get(quote_type, [])
+
+            # Warn against empty quote type
+            if not quotes:
+                await util.send_warning(channel, f'There are no quotes of type **{quote_type}**')
+
+            # Print all quotes of type
+            else:
+                txt = ''
+                for i, quote in enumerate(quotes):
+                    txt += f'**{i}:** "{quote}"\n'
+                await util.send_success(channel, f'**{quote_type}** Quotes', txt)
+
+
+        # List all quote types
+        else: 
+            txt = ''
+            found_quotes = False
+
+            # Get non-empty quote types
+            for key, item in self.quotes.items():
+                if item:
+                    found_quotes = True
+                    txt += f'**{key}** (has **{len(item)}** quotes)\n'
+
+            # Warn against empty quote types
+            if not found_quotes:
+                await util.send_warning(channel, 'There are no quotes')
+
+            # Print non-empty quote types
+            else:
+                await util.send_success(channel, 'Quote types', txt)

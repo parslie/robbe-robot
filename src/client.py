@@ -1,5 +1,6 @@
 from discord import *
 from commands import cmds
+import util
 
 PREFIX = '!'
 
@@ -62,13 +63,11 @@ class BotClient(Client):
             name, args = process_cmd(msg.content[1:])
             
             if name is None:
-                embed = Embed(title=f'ERROR: {args}', colour=Colour.red())
-                await msg.channel.send(embed=embed)
+                await util.send_error(msg.channel, args)
             else:
                 cmd = cmds.get(name, None)
                 
                 if cmd is None:
-                    embed = Embed(title=f'ERROR: the command "{name}" does not exist!', colour=Colour.red())
-                    await msg.channel.send(embed=embed)
+                    await util.send_error(msg.channel, f'The command **{name}** does not exist')
                 else:
                     await cmd.execute(self, msg.channel, msg.author, args)
