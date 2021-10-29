@@ -1,22 +1,14 @@
-TARGET_NAME=robbe
-BIN_FOLDER=$(HOME)/Scripts/bin
-TARGET_FOLDER=$(HOME)/Scripts/$(TARGET_NAME)
+BIN_NAME=robbe
+INSTALL_DIR=$(HOME)/Scripts/prog/$(BIN_NAME)
+LINK_DIR=$(HOME)/Scripts/bin
 
-all:
-	echo "Run make linux OR make windows instead..."
+install-rpi:
+	mkdir -p $(INSTALL_DIR)
+	mkdir -p $(LINK_DIR)
+	cp -r venv/ $(INSTALL_DIR)/venv/
+	cp src/** $(INSTALL_DIR)/
+	cp start.sh / $(INSTALL_DIR)/$(BIN_NAME)
+	chmod +x $(INSTALL_DIR)/$(BIN_NAME)
 
-linux:
-	mkdir -p $(TARGET_FOLDER)
-	mkdir -p $(BIN_FOLDER)
-	cp -r venv/ $(TARGET_FOLDER)/venv/ 
-	cp src/** $(TARGET_FOLDER)/
-	cp start.sh $(TARGET_FOLDER)/$(TARGET_NAME)
-	chmod +x $(TARGET_FOLDER)/$(TARGET_NAME)
-
-	rm -f $(BIN_FOLDER)/$(TARGET_NAME)
-	ln -s $(TARGET_FOLDER)/$(TARGET_NAME) $(BIN_FOLDER)/$(TARGET_NAME)
-
-rpi:	
-	killall -q python3
-	make linux
-	robbe &
+	rm -f $(LINK_DIR)/$(BIN_NAME)
+	ln -s $(INSTALL_DIR)/$(BIN_NAME) $(LINK_DIR)/$(BIN_NAME)

@@ -1,7 +1,13 @@
 #!/bin/bash
 
 BINPATH=$(readlink $BASH_SOURCE)
-BINDIR=$(dirname $BINPATH)
+
+if [ -n "$BINPATH" ]
+then
+    BINDIR=$(dirname $BINPATH)
+else
+    BINDIR=$(dirname $BASH_SOURCE)
+fi
 
 cd $BINDIR
 source $BINDIR/venv/bin/activate
