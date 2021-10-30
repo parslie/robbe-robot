@@ -1,6 +1,8 @@
+import math
 from discord import *
 from typing import List
 import random
+import datetime
 import util
 import data
 
@@ -37,7 +39,7 @@ class ModedCommand(Command):
 
     async def execute(self, client: Client, channel: TextChannel, author: User, args: List[str]):
         if not args:
-            await util.send_error(channel, f'You need to specify a mode for the command "{self.name}"')
+            await util.send_error(channel, f'You need to specify a mode for the command **{self.name}**')
         else:
             mode = args[0]
             
@@ -345,3 +347,53 @@ class Quote(ModedCommand):
             # Print non-empty quote types
             else:
                 await util.send_success(channel, 'Quote types', txt)
+
+@bind_command
+class Donken(ModedCommand):
+    def __init__(self):
+        super().__init__('donken', 'decides what McDonald\'s meal you want')
+        self.bind_mode('meal', self.meal)
+        self.bind_mode('dessert', self.dessert)
+
+        self.meals = ['McVegan', 'McChicken', 'Filet-O-Fish', 'Chicken Burger Salsa'
+            'Tripple Cheese', 'Dubble Cheese', 'QP Cheese',
+            'McFeast', 'Big Mac', 'Tasty Cheese',
+            'McSelection Bearnaise']
+        self.sides = ['Fries'] * 9 + \
+            ['Apple Slices']
+        self.drinks = ['Coca-Cola', 'Fanta Orange', 'Sprite', 'Fanta Exotic'] * 4 + \
+            ['Bonaqua Natural', 'Bonaqua Lemon Lime'] * 2 + \
+            ['Coffee', 'Orange Juice', 'Apple Juice']
+        self.desserts = ['Pie', 'McFlurry', 'Milkshake', 'Sundae', 'Frappé']
+
+    def help(self):
+        return '''
+                Decides what McDonald\'s meal you want. This is done by letting Ronald McDonald read your soul. He can tell you what meal or what dessert you want this quarter hour.
+                Usage: **donken [mode]**
+                Modes: **meal** and **dessert**
+
+                The modes are self-explanatory.
+               '''
+
+    def get_seed(self, user_id):
+        now = datetime.datetime.now()
+        quarter = math.floor(now.minute / 15)
+        return f'{now.month}{now.day}{now.hour}{quarter}{user_id}'
+
+    async def meal(self, client: Client, channel: TextChannel, author: User, args: List[str]):
+        if args:
+            await util.send_error(channel, f'The mode **meal** needs no arguments')
+        else:
+            random.seed(self.get_seed(author.id))
+            meal = random.choice(self.meals)
+            side = random.choice(self.sides)
+            drink = random.choice(self.drinks)
+            await util.send_success(channel, 'Ronald has read your soul', f'You want a **{meal}** with **{side}** and **{drink}**')
+
+    async def dessert(self, client: Client, channel: TextChannel, author: User, args: List[str]):
+        if args:
+            await util.send_error(channel, f'The mode **dessert** needs no arguments')
+        else:
+            random.seed(self.get_seed(author.id))
+            dessert = random.choice(self.desserts)
+            await util.send_success(channel, 'Ronald has read your soul', f'You want a **{dessert}**')
