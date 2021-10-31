@@ -397,3 +397,29 @@ class Donken(ModedCommand):
             random.seed(self.get_seed(author.id))
             dessert = random.choice(self.desserts)
             await util.send_success(channel, 'Ronald has read your soul', f'You want a **{dessert}**')
+
+
+@bind_command
+class Counter(ModedCommand):
+    def __init__(self):
+        super().__init__('counter', 'N/A')
+        self.bind_mode('create', self.create)
+        self.bind_mode('remove', self.remove)
+        self.bind_mode('list', self.list)
+        self.bind_mode('increment', self.increment)
+        self.bind_mode('decrement', self.decrement)
+
+    async def create(self, client: Client, channel: TextChannel, author: User, args: List[str]):
+        pass
+
+    async def remove(self, client: Client, channel: TextChannel, author: User, args: List[str]):
+        pass
+
+    async def list(self, client: Client, channel: TextChannel, author: User, args: List[str]):
+        pass
+
+    async def increment(self, client: Client, channel: TextChannel, author: User, args: List[str]):
+        pass
+
+    async def decrement(self, client: Client, channel: TextChannel, author: User, args: List[str]):
+        pass
