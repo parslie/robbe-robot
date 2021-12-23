@@ -68,6 +68,6 @@ class BotClient(Client):
                 cmd = cmds.get(name, None)
                 
                 if cmd is None:
-                    await util.send_error(msg.channel, f'The command **{name}** does not exist')
+                    await util.send_error(msg.channel, f'The command __{name}__ does not exist')
                 else:
                     await cmd.execute(self, msg.channel, msg.author, args)

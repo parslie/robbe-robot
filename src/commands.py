@@ -408,6 +408,7 @@ class Counter(ModedCommand):
     def __init__(self):
         super().__init__('counter', 'keeps track of number counters')
         self.bind_mode('create', self.create)
+        self.bind_mode('delete', self.delete)
         self.bind_mode('increment', self.increment)
         self.bind_mode('decrement', self.decrement)
         self.bind_mode('list', self.list)
@@ -418,30 +419,35 @@ class Counter(ModedCommand):
         return '''
                 Keeps track of number counters, like the *Andröv Phasmophobia Death Counter*.
                 Usage: **counter [mode]**
-                Modes: **create**, **increment**, **decrement** and **list**
+                Modes: **create**, **delete**, **increment**, **decrement** and **list**
 
                 **Create mode:**
                 Creates a new counter with the specified ID and name.
                 Usage: **counter create [ID] [name]**
-                Example: **counter create anddeaths "Andröv Phasmophobia Deaths"**
+                Example: **counter create and_deaths "Andröv Phasmophobia Deaths"**
+
+                **Delete mode:**
+                Deletes the counter with the specified ID:
+                Usage: **counter delete [ID]**
+                Example: **counter delete and_deaths**
 
                 **Increment mode:**
                 Increments a counter with the specified amount. The amount is 1 if left blank.
                 Usage: **counter increment [ID] [amount]**
-                Example: **counter increment anddeaths**
-                Example: **counter increment anddeaths 69420**
+                Example: **counter increment and_deaths**
+                Example: **counter increment and_deaths 69420**
                 
                 **Decrement mode:**
                 Decrements a counter with the specified amount. The amount is -1 if left blank.
                 Usage: **counter decrement [ID] [amount]**
-                Example: **counter decrement anddeaths**
-                Example: **counter decrement anddeaths 31415**
+                Example: **counter decrement and_deaths**
+                Example: **counter decrement and_deaths 31415**
                 
                 **List mode:**
                 Lists all existing counters or a specific counter.
                 Usage: **counter list [ID]**
                 Example: **counter list**
-                Example: **counter list anddeaths**
+                Example: **counter list and_deaths**
                '''
 
     async def create(self, client: Client, channel: TextChannel, author: User, args: List[str]):
@@ -460,6 +466,21 @@ class Counter(ModedCommand):
 
                 data.save(self.counters, 'data/counters.json')
                 await util.send_success(channel, f'Created the counter __{counter_name}__ with the ID __{counter_id}__')
+
+    async def delete(self, client: Client, channel: TextChannel, author: User, args: List[str]):
+        if len(args) != 1:
+            await util.send_error(channel, 'The mode __delete__ needs exactly 1 argument')
+
+        # Create a counter with a specific name
+        else:
+            counter_id = args[0]
+
+            if counter_id not in self.counters.keys():
+                await util.send_warning(channel, f'A counter with the ID __{counter_id}__ does not exists')
+            else:
+                counter_name, counter_value = self.counters.pop(counter_id)
+                data.save(self.counters, 'data/counters.json')
+                await util.send_success(channel, f'Deleted the counter __{counter_name}__ with the ID __{counter_id}__')
 
     async def increment(self, client: Client, channel: TextChannel, author: User, args: List[str]):
         if not args or len(args) > 2:
@@ -555,7 +576,7 @@ class Counter(ModedCommand):
 
             for counter_id in self.counters.keys():
                 counter_name, counter_value = self.counters[counter_id]
-                text += f'**{counter_id} (**{counter_name}**):** {counter_value}\n'
+                text += f'**{counter_id}** - {counter_name}\n'
 
             await util.send_success(channel, 'All current counters', text)
 
